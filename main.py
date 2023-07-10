@@ -4,7 +4,8 @@ import pygame as pg
 import sys
 from shader_program import ShaderProgram
 from scene import Scene
-
+from player import Player
+from textures import Textures
 
 class Main:
 	def __init__(self):
@@ -14,12 +15,10 @@ class Main:
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, 3)
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE) # Prohibit use of deprecated functions.
 		pg.display.gl_set_attribute(pg.GL_DEPTH_SIZE, 24) # 24-bit depth for the depth buffer.
-		print("before set mode")
+
 		# Set window resolution from settings and set OpenGl context.
 		pg.display.set_mode(WINDOW_RESOLUTION, flags=pg.OPENGL | pg.DOUBLEBUF)
-		print("before context")
 		self.ctx = mgl.create_context()
-		print("after set context")
 
 		# Enable fragment depth-testing, culling of invisible faces and colour blending.
 		self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
@@ -29,18 +28,21 @@ class Main:
 		self.delta_time = 0
 		self.time = 0
 
-		print("before init")
+		pg.event.set_grab(True)
+		pg.mouse.set_visible(False)
+
 		self.is_running = True
 		self.on_init()
 
 	def on_init(self):
+		self.textures = Textures(self)
+		self.player = Player(self)
 		self.shader_program = ShaderProgram(self)
 		self.scene = Scene(self)
 
-		print("after scene")
-
 
 	def update(self):
+		self.player.update()
 		self.shader_program.update()
 		self.scene.update()
 
@@ -57,6 +59,10 @@ class Main:
 		for event in pg.event.get():
 			if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
 				self.is_running = False
+
+			if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+				pg.event.set_grab(False)
+				pg.mouse.set_visible(True)
 
 	def run(self):
 		while self.is_running:
