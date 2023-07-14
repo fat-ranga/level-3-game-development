@@ -14,8 +14,8 @@ in vec2 uv;
 in float shading;
 in vec3 frag_world_pos;
 
-flat in int face_id;
-flat in int voxel_id;
+//flat in int face_id;
+//flat in int voxel_id;
 
 
 void main() {

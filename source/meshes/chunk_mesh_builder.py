@@ -40,10 +40,10 @@ def get_ao(local_pos, world_pos, world_voxels, plane):
 	return ao
 
 
-@njit(cache=True)
-def pack_data(x, y, z, voxel_id, face_id, ao_id, flip_id):
-	# x: 6bit  y: 6bit  z: 6bit  voxel_id: 8bit  face_id: 3bit  ao_id: 2bit  flip_id: 1bit
-	a, b, c, d, e, f, g = x, y, z, voxel_id, face_id, ao_id, flip_id
+@njit(cache=False)
+def pack_data(x, y, z, texture_id, face_id, ao_id, flip_id):
+	# x: 6bit  y: 6bit  z: 6bit  texture_id: 8bit  face_id: 3bit  ao_id: 2bit  flip_id: 1bit
+	a, b, c, d, e, f, g = x, y, z, texture_id, face_id, ao_id, flip_id
 
 	b_bit, c_bit, d_bit, e_bit, f_bit, g_bit = 6, 6, 8, 3, 2, 1
 	fg_bit = f_bit + g_bit
@@ -121,6 +121,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 			for z in range(CHUNK_SIZE):
 				# TODO cache coherency
 				voxel_id = chunk_voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y]
+				texture_id = 1
 
 				if not voxel_id:
 					continue
@@ -136,14 +137,14 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					# get ao values
 					ao = get_ao((x, y + 1, z), (wx, wy + 1, wz), world_voxels, plane='Y')
 					# Determine whether to flip the triangles of a face based on the ambient
-					# occlusion values.
+					# occlusion values, so that we don't get directional artifacts.
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 					 
-					# format: x, y, z, voxel_id, face_id, ao_id, flip_id
-					v0 = pack_data(x    , y + 1, z    , voxel_id, 0, ao[0], flip_id)
-					v1 = pack_data(x + 1, y + 1, z    , voxel_id, 0, ao[1], flip_id)
-					v2 = pack_data(x + 1, y + 1, z + 1, voxel_id, 0, ao[2], flip_id)
-					v3 = pack_data(x    , y + 1, z + 1, voxel_id, 0, ao[3], flip_id)
+					# format: x, y, z, texture_id, face_id, ao_id, flip_id
+					v0 = pack_data(x    , y + 1, z    , texture_id, 0, ao[0], flip_id)
+					v1 = pack_data(x + 1, y + 1, z    , texture_id, 0, ao[1], flip_id)
+					v2 = pack_data(x + 1, y + 1, z + 1, texture_id, 0, ao[2], flip_id)
+					v3 = pack_data(x    , y + 1, z + 1, texture_id, 0, ao[3], flip_id)
 
 					# When the ambient occlusion conditions are met, we flip the order
 					# of triangles for this face, so we do not get anisotropic shading
@@ -158,10 +159,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					ao = get_ao((x, y - 1, z), (wx, wy - 1, wz), world_voxels, plane='Y')
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-					v0 = pack_data(x    , y, z    , voxel_id, 1, ao[0], flip_id)
-					v1 = pack_data(x + 1, y, z    , voxel_id, 1, ao[1], flip_id)
-					v2 = pack_data(x + 1, y, z + 1, voxel_id, 1, ao[2], flip_id)
-					v3 = pack_data(x    , y, z + 1, voxel_id, 1, ao[3], flip_id)
+					v0 = pack_data(x    , y, z    , texture_id, 1, ao[0], flip_id)
+					v1 = pack_data(x + 1, y, z    , texture_id, 1, ao[1], flip_id)
+					v2 = pack_data(x + 1, y, z + 1, texture_id, 1, ao[2], flip_id)
+					v3 = pack_data(x    , y, z + 1, texture_id, 1, ao[3], flip_id)
 
 					if flip_id:
 						index = add_data(vertex_data, index, v1, v3, v0, v1, v2, v3)
@@ -173,10 +174,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					ao = get_ao((x + 1, y, z), (wx + 1, wy, wz), world_voxels, plane='X')
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-					v0 = pack_data(x + 1, y    , z    , voxel_id, 2, ao[0], flip_id)
-					v1 = pack_data(x + 1, y + 1, z    , voxel_id, 2, ao[1], flip_id)
-					v2 = pack_data(x + 1, y + 1, z + 1, voxel_id, 2, ao[2], flip_id)
-					v3 = pack_data(x + 1, y    , z + 1, voxel_id, 2, ao[3], flip_id)
+					v0 = pack_data(x + 1, y    , z    , texture_id, 2, ao[0], flip_id)
+					v1 = pack_data(x + 1, y + 1, z    , texture_id, 2, ao[1], flip_id)
+					v2 = pack_data(x + 1, y + 1, z + 1, texture_id, 2, ao[2], flip_id)
+					v3 = pack_data(x + 1, y    , z + 1, texture_id, 2, ao[3], flip_id)
 
 					if flip_id:
 						index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
@@ -188,10 +189,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					ao = get_ao((x - 1, y, z), (wx - 1, wy, wz), world_voxels, plane='X')
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-					v0 = pack_data(x, y    , z    , voxel_id, 3, ao[0], flip_id)
-					v1 = pack_data(x, y + 1, z    , voxel_id, 3, ao[1], flip_id)
-					v2 = pack_data(x, y + 1, z + 1, voxel_id, 3, ao[2], flip_id)
-					v3 = pack_data(x, y    , z + 1, voxel_id, 3, ao[3], flip_id)
+					v0 = pack_data(x, y    , z    , texture_id, 3, ao[0], flip_id)
+					v1 = pack_data(x, y + 1, z    , texture_id, 3, ao[1], flip_id)
+					v2 = pack_data(x, y + 1, z + 1, texture_id, 3, ao[2], flip_id)
+					v3 = pack_data(x, y    , z + 1, texture_id, 3, ao[3], flip_id)
 
 					if flip_id:
 						index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
@@ -203,10 +204,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					ao = get_ao((x, y, z - 1), (wx, wy, wz - 1), world_voxels, plane='Z')
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-					v0 = pack_data(x,     y,     z, voxel_id, 4, ao[0], flip_id)
-					v1 = pack_data(x,     y + 1, z, voxel_id, 4, ao[1], flip_id)
-					v2 = pack_data(x + 1, y + 1, z, voxel_id, 4, ao[2], flip_id)
-					v3 = pack_data(x + 1, y,     z, voxel_id, 4, ao[3], flip_id)
+					v0 = pack_data(x,     y,     z, texture_id, 4, ao[0], flip_id)
+					v1 = pack_data(x,     y + 1, z, texture_id, 4, ao[1], flip_id)
+					v2 = pack_data(x + 1, y + 1, z, texture_id, 4, ao[2], flip_id)
+					v3 = pack_data(x + 1, y,     z, texture_id, 4, ao[3], flip_id)
 
 					if flip_id:
 						index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
@@ -218,10 +219,10 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 					ao = get_ao((x, y, z + 1), (wx, wy, wz + 1), world_voxels, plane='Z')
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-					v0 = pack_data(x    , y    , z + 1, voxel_id, 5, ao[0], flip_id)
-					v1 = pack_data(x    , y + 1, z + 1, voxel_id, 5, ao[1], flip_id)
-					v2 = pack_data(x + 1, y + 1, z + 1, voxel_id, 5, ao[2], flip_id)
-					v3 = pack_data(x + 1, y    , z + 1, voxel_id, 5, ao[3], flip_id)
+					v0 = pack_data(x    , y    , z + 1, texture_id, 5, ao[0], flip_id)
+					v1 = pack_data(x    , y + 1, z + 1, texture_id, 5, ao[1], flip_id)
+					v2 = pack_data(x + 1, y + 1, z + 1, texture_id, 5, ao[2], flip_id)
+					v3 = pack_data(x + 1, y    , z + 1, texture_id, 5, ao[3], flip_id)
 
 					if flip_id:
 						index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
