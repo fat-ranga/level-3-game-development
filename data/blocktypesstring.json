@@ -1,0 +1,51 @@
+{
+"air": {
+  "block_name": "Air",
+  "is_solid": "false",
+  "texture_id":{"0":"stone","1":"stone","2":"stone","3":"stone","4":"stone","5":"stone"},
+  "icon": ""
+},
+
+"stone": {
+  "block_name": "Stone",
+  "is_solid": "true",
+  "texture_id":{"0":"stone","1":"stone","2":"stone","3":"stone","4":"stone","5":"stone"}
+},
+
+"grass_block": {
+  "block_name": "Grass",
+  "is_solid": "true",
+  "texture_id":{"0":"grass_side","1":"grass_side","2":"grass_top","3":"dirt","4":"grass_side","5":"grass_side"}
+},
+
+"cobblestone": {
+  "block_name": "Cobblestone",
+  "is_solid": "true",
+  "texture_id":{"0":"cobblestone","1":"cobblestone","2":"cobblestone","3":"cobblestone","4":"cobblestone","5":"cobblestone"}
+},
+
+"bedrock": {
+  "block_name": "Bedrock",
+  "is_solid": "true",
+  "texture_id":{"0":"bedrock","1":"bedrock","2":"bedrock","3":"bedrock","4":"bedrock","5":"bedrock"}
+},
+
+"dirt": {
+  "block_name": "Dirt",
+  "is_solid": "true",
+  "texture_id":{"0":"dirt","1":"dirt","2":"dirt","3":"dirt","4":"dirt","5":"dirt"}
+},
+
+"iron_ore": {
+  "block_name": "Iron Ore",
+  "is_solid": "true",
+  "texture_id":{"0":"iron_ore","1":"iron_ore","2":"iron_ore","3":"iron_ore","4":"iron_ore","5":"iron_ore"}
+},
+
+"diamond_ore": {
+  "block_name": "Diamond Ore",
+  "is_solid": "true",
+  "texture_id":{"0":"diamond","1":"diamond","2":"diamond","3":"diamond","4":"diamond","5":"diamond"}
+}
+
+}

@@ -1,5 +1,8 @@
 from source.settings import *
+from source.data_definitions import *
 
+from numba import typed, types, typeof
+from numba import jit
 
 @njit(cache=True)
 def get_ao(local_pos, world_pos, world_voxels, plane):
@@ -103,7 +106,7 @@ def add_data(vertex_data, index, *vertices):
 
 # We need to form a mesh of faces based on what voxels are visible to us.
 @njit(cache=False)
-def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
+def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, block_types: BlockType):
 	# The size of this array is based on the following:
 	#
 	# ARRAY_SIZE = CHUNK_VOL * NUM_VOXEL_VERTICES * NUM_VERTEX_ATTRIBUTES
@@ -115,6 +118,8 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
 	vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype='uint32')
 	index = 0
+
+	#print(block_types.is_solid)
 
 	for x in range(CHUNK_SIZE):
 		for y in range(CHUNK_SIZE):
@@ -134,6 +139,8 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
 				# top face
 				if is_void((x, y + 1, z), (wx, wy + 1, wz), world_voxels):
+					if block_types.texture_ids[0] == "grass_top":
+						texture_id = 11
 					# get ao values
 					ao = get_ao((x, y + 1, z), (wx, wy + 1, wz), world_voxels, plane='Y')
 					# Determine whether to flip the triangles of a face based on the ambient
@@ -156,6 +163,8 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
 				# bottom face
 				if is_void((x, y - 1, z), (wx, wy - 1, wz), world_voxels):
+					if block_types.texture_ids[1] == "dirt":
+						texture_id = 7
 					ao = get_ao((x, y - 1, z), (wx, wy - 1, wz), world_voxels, plane='Y')
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
@@ -171,6 +180,8 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
 				# right face
 				if is_void((x + 1, y, z), (wx + 1, wy, wz), world_voxels):
+					if block_types.texture_ids[2] == "grass_side":
+						texture_id = 8
 					ao = get_ao((x + 1, y, z), (wx + 1, wy, wz), world_voxels, plane='X')
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
@@ -186,6 +197,9 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
 				# left face
 				if is_void((x - 1, y, z), (wx - 1, wy, wz), world_voxels):
+					if block_types.texture_ids[3] == "grass_side":
+						texture_id = 8
+					#texture_id = 8
 					ao = get_ao((x - 1, y, z), (wx - 1, wy, wz), world_voxels, plane='X')
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
@@ -201,6 +215,8 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
 				# back face
 				if is_void((x, y, z - 1), (wx, wy, wz - 1), world_voxels):
+					if block_types.texture_ids[4] == "grass_side":
+						texture_id = 8
 					ao = get_ao((x, y, z - 1), (wx, wy, wz - 1), world_voxels, plane='Z')
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
@@ -216,6 +232,9 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
 				# front face
 				if is_void((x, y, z + 1), (wx, wy, wz + 1), world_voxels):
+					if block_types.texture_ids[5] == "grass_side":
+						texture_id = 8
+
 					ao = get_ao((x, y, z + 1), (wx, wy, wz + 1), world_voxels, plane='Z')
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 

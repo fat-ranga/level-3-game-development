@@ -7,12 +7,12 @@ import math
 MAJOR_VER, MINOR_VER = 3, 3
 Z_DEPTH_SIZE = 24
 
-# Anti-aliasing, can cause line artifacts in-between triangles
+# Antialiasing. Can cause line artifacts in-between triangles
 # that have edges that share the same position.
 NUM_SAMPLES = 0
 
 # Resolution.
-WINDOW_RESOLUTION = glm.vec2(812, 480)
+WINDOW_RESOLUTION = glm.vec2(1440, 720)
 
 # TODO World generation seed.
 SEED = 16
@@ -54,7 +54,7 @@ PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
 MOUSE_SENSITIVITY = 0.002
 
 # Background world colour.
-BG_COLOR = glm.vec3(0.58, 0.83, 0.99)
+BG_COLOUR = glm.vec3(0.58, 0.83, 0.99)
 
 # Texture atlas packer.
 ATLAS_TEXTURE_ELEMENT_SIZE = 16

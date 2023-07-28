@@ -1,3 +1,5 @@
+import os
+
 from source.settings import *
 import moderngl as mgl
 import pygame as pg
@@ -12,6 +14,8 @@ class Main:
 	def __init__(self):
 		pg.init()
 		pg.display.set_caption("Kiwicraft")
+
+		# Bunch of OpenGL boilerplate stuff.
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, MAJOR_VER)
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, MINOR_VER)
 		# Prohibit use of deprecated functions.
@@ -30,9 +34,10 @@ class Main:
 		self.ctx.gc_mode = 'auto'
 		
 		self.clock = pg.time.Clock()
-		self.delta_time = 0
+		self.delta_time = 0 # Time between frames.
 		self.time = 0
-		
+
+		# Makes the current window active, I believe!
 		pg.event.set_grab(True)
 		pg.mouse.set_visible(False)
 		
@@ -55,7 +60,7 @@ class Main:
 		pg.display.set_caption(f'{self.clock.get_fps() :.0f}')
 	
 	def render(self):
-		self.ctx.clear(color=BG_COLOR) # Clear frame and depth buffers.
+		self.ctx.clear(color=BG_COLOUR) # Clear frame and depth buffers.
 		self.scene.render()
 		pg.display.flip() # Display a new frame.
 	
@@ -76,5 +81,7 @@ class Main:
 
 # Magical Python thing!
 if __name__ == '__main__':
+	# Temporary hack to make working directory the base directory of the project.
+	os.chdir("../")
 	game = Main()
 	game.run()
