@@ -48,7 +48,11 @@ class Main:
 		self.textures = Textures(self)
 		self.player = Player(self)
 		self.shader_program = ShaderProgram(self)
-		self.scene = Scene(self)
+		self.scene = Scene(self, texture_ids=self.textures.atlas_packer.texture_ids)
+
+		# TODO: better way to pass this data?
+		#self.scene.world.texture_ids = self.textures.atlas_packer.texture_ids
+		#print("from main" + str(self.textures.atlas_packer.texture_ids))
 	
 	def update(self):
 		self.player.update()

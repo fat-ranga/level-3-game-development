@@ -14,7 +14,7 @@
 "grass_block": {
   "name": "Grass",
   "is_solid": true,
-  "texture_ids":["grass_side","grass_side","grass_top","dirt","grass_side","grass_side"]
+  "texture_ids":["grass_top","dirt","grass_side","grass_side","grass_side","grass_side"]
 },
 
 "cobblestone": {

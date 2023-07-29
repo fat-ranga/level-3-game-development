@@ -4,14 +4,15 @@ from source.voxel_handler import VoxelHandler
 from source.data_definitions import *
 
 import numba
-from numba.experimental import jitclass
 from numba.typed import List
+from numba.experimental import jitclass
 import json
 import numpy as np
 
 class World:
-	def __init__(self, game):
+	def __init__(self, game, texture_ids):
 		self.game = game
+		self.texture_ids = texture_ids
 		self.voxel_data = self.load_voxel_data()
 		# TODO: explain weird syntax
 		self.chunks = [None for _ in range(WORLD_VOL)]
@@ -34,7 +35,7 @@ class World:
 		# variables that aren't typed, such as Python dictionaries.
 		data = VoxelDataDictionary()
 
-		voxel_type_numeric_id: numba.types.int8 = numba.types.int8(0)
+		voxel_type_numeric_id: numba.types.int8 = numba.types.uint8(0)
 
 		for item in json_file_fr:
 			new_voxel_type = VoxelType()
@@ -43,15 +44,30 @@ class World:
 			new_voxel_type.name = json_file_fr[item]["name"]
 			new_voxel_type.is_solid = json_file_fr[item]["is_solid"]
 
-			for id in json_file_fr[item]["texture_ids"]:
-				new_voxel_type.texture_ids.append(id)
+			# TODO: fix this to not be a reflected list, since those are pending deprecation by the Numba library.
+			# We have to make a new list because we cannot clear() the texture_ids list
+			# from the VoxelType() class for some reason. So we set it to be a new one instead.
 
+			# Can't make this list start off as empty, otherwise we get a memory footprint error or something.
+			new_list: numba.types.List(numba.types.string) = ["grass_side", "grass_side", "grass_top", "dirt", "grass_side", "grass_side"]
+			new_list.clear() # Delete the default values before appending new ones.
+			for id in json_file_fr[item]["texture_ids"]:
+				new_list.append(id)
+
+			new_voxel_type.texture_ids = new_list
 			data.voxel[item] = new_voxel_type
-			data.string_id[numba.types.int8(voxel_type_numeric_id)] = item
+			data.voxel_string_id[numba.types.uint8(voxel_type_numeric_id)] = item
 
 			voxel_type_numeric_id += 1
 
-		#print(data.string_id)
+			print(new_voxel_type.name)
+
+		for key in self.texture_ids:
+			data.texture_id[key] = numba.types.uint64(self.texture_ids[key])
+
+		#print(self.texture_ids)
+
+		#print(data.texture_id)
 		return data
 
 	@njit

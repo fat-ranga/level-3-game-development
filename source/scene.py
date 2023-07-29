@@ -6,9 +6,9 @@ from source.world_objects.clouds import Clouds
 
 
 class Scene:
-	def __init__(self, game):
+	def __init__(self, game, texture_ids):
 		self.game = game
-		self.world = World(self.game)
+		self.world = World(self.game, texture_ids=texture_ids)
 		self.voxel_marker = VoxelMarker(self.world.voxel_handler)
 		self.water = Water(game)
 		self.clouds = Clouds(game)

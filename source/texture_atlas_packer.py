@@ -5,18 +5,12 @@ import pygame as pg
 
 class TextureAtlasPacker:
 	def __init__(self):
-		
 		self.texture_ids: dict = {}
 		
 		# Calculated during load_textures() based on the number of textures imported.
 		self.texture_atlas_size_in_pixels: int = ATLAS_TEXTURE_ELEMENT_SIZE
 		
 		self.atlas_size_in_voxels: int
-		
-		#self.texture_paths: list = self.get_texture_paths_in_directory()
-		#self.texture_list: list = self.load_textures(self.texture_paths)
-		#self.atlas_texture = self.pack_atlas(self.texture_list)
-		#print(self.texture_list)
 	
 	def get_texture_paths_in_directory(self, root_directory: str = DIR_TEXTURES) -> list:
 		files: list = []
@@ -117,5 +111,5 @@ class TextureAtlasPacker:
 					atlas_texture.set_at((int(x) + int(x_offset), int(y) + int(y_offset)), colour)
 					
 		#pg.image.save(atlas_texture, "data/atlas_texture.png")
-		print(self.texture_ids)
+		#print(self.texture_ids)
 		return atlas_texture

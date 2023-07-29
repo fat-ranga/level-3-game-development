@@ -25,19 +25,22 @@ class VoxelType:
 		self.string_id = "air"
 		self.name = "Air"
 		self.is_solid = False
-		self.texture_ids = ["grass_top", "dirt", "grass_side", "grass_side", "grass_side", "grass_side"]
+		self.texture_ids = ["stone","stone","stone","stone","stone","stone"]
 		# self.icon
 
 
 voxel_key_value_types = (numba.types.unicode_type, VoxelType.class_type.instance_type)
-string_id_key_value_types = (numba.types.int8, numba.types.unicode_type) # 8-bit int because there can only be 256 different voxel types.
+voxel_string_id_key_value_types = (numba.types.uint8, numba.types.unicode_type) # 8-bit int because there can only be 256 different voxel types.
+texture_id_key_value_types = (numba.types.unicode_type, numba.types.uint64)
 
 voxel_data_dictionary_spec = [("voxel", numba.types.DictType(*voxel_key_value_types)),
-							  ("string_id", numba.types.DictType(*string_id_key_value_types))]
+							  ("voxel_string_id", numba.types.DictType(*voxel_string_id_key_value_types)),
+							  ("texture_id", numba.types.DictType(*texture_id_key_value_types))]
 
 @jitclass(voxel_data_dictionary_spec)
 class VoxelDataDictionary:
 
 	def __init__(self):
 		self.voxel = numba.typed.Dict.empty(*voxel_key_value_types)
-		self.string_id = numba.typed.Dict.empty(*string_id_key_value_types)
+		self.voxel_string_id = numba.typed.Dict.empty(*voxel_string_id_key_value_types)
+		self.texture_id = numba.typed.Dict.empty(*texture_id_key_value_types)
