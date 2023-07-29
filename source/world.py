@@ -5,13 +5,14 @@ from source.data_definitions import *
 
 import numba
 from numba.experimental import jitclass
+from numba.typed import List
 import json
 import numpy as np
 
 class World:
 	def __init__(self, game):
 		self.game = game
-		self.voxel_types = self.load_voxel_types()
+		self.voxel_data = self.load_voxel_data()
 		# TODO: explain weird syntax
 		self.chunks = [None for _ in range(WORLD_VOL)]
 
@@ -23,16 +24,34 @@ class World:
 		self.build_chunk_mesh()
 		self.voxel_handler = VoxelHandler(self)
 
-	def load_voxel_types(self):
+	def load_voxel_data(self):
 
 		file = open("data/voxel_types.json")
 		json_file_fr = json.load(file)
 
 		# Convert the untyped Python dictionary generated from the json file
-		# to a @jitclass, since @njit functions cannot take in
+		# to a typed dictionary of @jitclasses, since @njit functions cannot take in
 		# variables that aren't typed, such as Python dictionaries.
-		data = VoxelTypeDictionary()
-		#print(data.texture_ids)
+		data = VoxelDataDictionary()
+
+		voxel_type_numeric_id: numba.types.int8 = numba.types.int8(0)
+
+		for item in json_file_fr:
+			new_voxel_type = VoxelType()
+
+			new_voxel_type.string_id = item
+			new_voxel_type.name = json_file_fr[item]["name"]
+			new_voxel_type.is_solid = json_file_fr[item]["is_solid"]
+
+			for id in json_file_fr[item]["texture_ids"]:
+				new_voxel_type.texture_ids.append(id)
+
+			data.voxel[item] = new_voxel_type
+			data.string_id[numba.types.int8(voxel_type_numeric_id)] = item
+
+			voxel_type_numeric_id += 1
+
+		#print(data.string_id)
 		return data
 
 	@njit

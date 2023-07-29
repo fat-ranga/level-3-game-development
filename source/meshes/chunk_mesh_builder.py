@@ -106,7 +106,7 @@ def add_data(vertex_data, index, *vertices):
 
 # We need to form a mesh of faces based on what voxels are visible to us.
 @njit(cache=False)
-def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_types: VoxelTypeDictionary):
+def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_data: VoxelDataDictionary):
 	# The size of this array is based on the following:
 	#
 	# ARRAY_SIZE = CHUNK_VOL * NUM_VOXEL_VERTICES * NUM_VERTEX_ATTRIBUTES
@@ -119,7 +119,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_t
 	vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype='uint32')
 	index = 0
 
-	print(voxel_types.voxel_types["air"].is_solid)
+	#print(voxel_types.voxel_types["air"].is_solid)
 
 	for x in range(CHUNK_SIZE):
 		for y in range(CHUNK_SIZE):
@@ -127,6 +127,9 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_t
 				# TODO cache coherency
 				voxel_id = chunk_voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y]
 				texture_id = 1
+				#print(voxel_data.voxel[voxel_types.string_id[voxel_id]])
+
+				#print(voxel_data.voxel[voxel_types.string_id[voxel_id]].texture_ids[0])
 
 				if not voxel_id:
 					continue

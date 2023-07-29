@@ -13,7 +13,7 @@ class ChunkMesh(BaseMesh):
 		self.chunk = chunk
 		self.ctx = self.game.ctx
 		self.program = self.game.shader_program.chunk
-		self.voxel_types = chunk.voxel_types
+		self.voxel_data = chunk.voxel_data
 		
 		# Make sure to change the VBO format if new vertex attributes are added.
 		self.vbo_format = "1u4"  # 1 unsigned 32-bit.
@@ -35,6 +35,6 @@ class ChunkMesh(BaseMesh):
 			format_size=self.format_size,
 			chunk_pos=self.chunk.position,
 			world_voxels=self.chunk.world.voxels,
-			voxel_types=self.voxel_types
+			voxel_data=self.voxel_data
 		)
 		return mesh

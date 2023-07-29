@@ -40,7 +40,7 @@ def get_index(x, y, z):
 
 @njit(cache=True)
 def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height):
-	# This is pretty much where all of the terrain generation happens.
+	# This is pretty much where all the terrain generation happens.
 	
 	voxel_id = 0
 	

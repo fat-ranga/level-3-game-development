@@ -117,5 +117,5 @@ class TextureAtlasPacker:
 					atlas_texture.set_at((int(x) + int(x_offset), int(y) + int(y_offset)), colour)
 					
 		#pg.image.save(atlas_texture, "data/atlas_texture.png")
-		#print(self.texture_ids)
+		print(self.texture_ids)
 		return atlas_texture

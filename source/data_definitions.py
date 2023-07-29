@@ -29,12 +29,15 @@ class VoxelType:
 		# self.icon
 
 
-key_value_types = (numba.types.unicode_type, VoxelType.class_type.instance_type)
-voxel_type_dictionary_spec = [("voxel_types", numba.types.DictType(*key_value_types))]
+voxel_key_value_types = (numba.types.unicode_type, VoxelType.class_type.instance_type)
+string_id_key_value_types = (numba.types.int8, numba.types.unicode_type) # 8-bit int because there can only be 256 different voxel types.
 
-@jitclass(voxel_type_dictionary_spec)
-class VoxelTypeDictionary:
+voxel_data_dictionary_spec = [("voxel", numba.types.DictType(*voxel_key_value_types)),
+							  ("string_id", numba.types.DictType(*string_id_key_value_types))]
+
+@jitclass(voxel_data_dictionary_spec)
+class VoxelDataDictionary:
 
 	def __init__(self):
-		self.voxel_types = numba.typed.Dict.empty(*key_value_types)
-		self.voxel_types["air"] = VoxelType()
+		self.voxel = numba.typed.Dict.empty(*voxel_key_value_types)
+		self.string_id = numba.typed.Dict.empty(*string_id_key_value_types)
