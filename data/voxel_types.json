@@ -1,48 +1,48 @@
 {
 "air": {
-  "block_name": "Air",
+  "name": "Air",
   "is_solid": false,
   "texture_ids":["stone","stone","stone","stone","stone","stone"]
 },
 
 "stone": {
-  "block_name": "Stone",
+  "name": "Stone",
   "is_solid": true,
   "texture_ids":["stone","stone","stone","stone","stone","stone"]
 },
 
 "grass_block": {
-  "block_name": "Grass",
+  "name": "Grass",
   "is_solid": true,
   "texture_ids":["grass_side","grass_side","grass_top","dirt","grass_side","grass_side"]
 },
 
 "cobblestone": {
-  "block_name": "Cobblestone",
+  "name": "Cobblestone",
   "is_solid": true,
   "texture_ids":["cobblestone","cobblestone","cobblestone","cobblestone","cobblestone","cobblestone"]
 },
 
 "bedrock": {
-  "block_name": "Bedrock",
+  "name": "Bedrock",
   "is_solid": true,
   "texture_ids":["bedrock","bedrock","bedrock","bedrock","bedrock","bedrock"]
 },
 
 "dirt": {
-  "block_name": "Dirt",
+  "name": "Dirt",
   "is_solid": true,
   "texture_ids":["dirt","dirt","dirt","dirt","dirt","dirt"]
 },
 
 "iron_ore": {
-  "block_name": "Iron Ore",
+  "name": "Iron Ore",
   "is_solid": true,
   "texture_ids":["iron_ore","iron_ore","iron_ore","iron_ore","iron_ore","iron_ore"]
 },
 
 "diamond_ore": {
-  "block_name": "Diamond Ore",
+  "name": "Diamond Ore",
   "is_solid": true,
   "texture_ids":["diamond","diamond","diamond","diamond","diamond","diamond"]
 }

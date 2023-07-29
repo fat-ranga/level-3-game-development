@@ -11,7 +11,7 @@ class TextureAtlasPacker:
 		# Calculated during load_textures() based on the number of textures imported.
 		self.texture_atlas_size_in_pixels: int = ATLAS_TEXTURE_ELEMENT_SIZE
 		
-		self.atlas_size_in_blocks: int
+		self.atlas_size_in_voxels: int
 		
 		#self.texture_paths: list = self.get_texture_paths_in_directory()
 		#self.texture_list: list = self.load_textures(self.texture_paths)

@@ -11,7 +11,7 @@ import numpy as np
 class World:
 	def __init__(self, game):
 		self.game = game
-		self.block_types = self.load_block_types()
+		self.voxel_types = self.load_voxel_types()
 		# TODO: explain weird syntax
 		self.chunks = [None for _ in range(WORLD_VOL)]
 
@@ -23,16 +23,16 @@ class World:
 		self.build_chunk_mesh()
 		self.voxel_handler = VoxelHandler(self)
 
-	def load_block_types(self):
+	def load_voxel_types(self):
 
-		file = open("data/block_types.json")
+		file = open("data/voxel_types.json")
 		json_file_fr = json.load(file)
 
 		# Convert the untyped Python dictionary generated from the json file
 		# to a @jitclass, since @njit functions cannot take in
 		# variables that aren't typed, such as Python dictionaries.
-		data = BlockType()
-		print(data.texture_ids)
+		data = VoxelTypeDictionary()
+		#print(data.texture_ids)
 		return data
 
 	@njit

@@ -11,7 +11,7 @@ class Chunk:
 		self.voxels: np.array = None
 		self.mesh: ChunkMesh = None
 		self.is_empty = True
-		self.block_types = world.block_types
+		self.voxel_types = world.voxel_types
 		
 		self.center = (glm.vec3(self.position) + 0.5) * CHUNK_SIZE
 		self.is_on_frustum = self.game.player.frustum.is_on_frustum

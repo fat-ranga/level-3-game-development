@@ -7,7 +7,7 @@
   "lodes": {
 	  
 	  "dirt_layer":{
-		  "block_name": "dirt",
+		  "voxel_string_id": "dirt",
 		  "min_height": 20,
 		  "max_height": 100,
 		  "scale": 0.3,
@@ -16,7 +16,7 @@
 		  "noise_offset": 0
 	  },
 	  "iron_layer":{
-		  "block_name": "iron_ore",
+		  "voxel_string_id": "iron_ore",
 		  "min_height": 0,
 		  "max_height": 30,
 		  "scale": 0.2,
@@ -25,7 +25,7 @@
 		  "noise_offset": 500
 	  },
 	  "diamond_layer":{
-		  "block_name": "diamond_ore",
+		  "voxel_string_id": "diamond_ore",
 		  "min_height": 0,
 		  "max_height": 5,
 		  "scale": 1,
@@ -33,16 +33,15 @@
 		  "high_threshold": 0,
 		  "noise_offset": 70
 	  },
-	  "caves_au":{
-		  "block_name": "air",
+	  "caves_au": {
+		  "voxel_string_id": "air",
 		  "min_height": 3,
 		  "max_height": 60,
 		  "scale": 0.02,
 		  "low_threshold": -0.06,
 		  "high_threshold": 0.06,
 		  "noise_offset": 12
-	  },
-	  
+	  }
   }
 }
 	

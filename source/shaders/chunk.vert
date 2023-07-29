@@ -89,13 +89,13 @@ void main() {
     //uv = uv_coords[uv_indices[uv_index]];
     uv = uv_coords[uv_indices[uv_index]];
 
-    float normalised_block_texture_size = 1.0 / 8.0;
+    float normalised_voxel_texture_size = 1.0 / 8.0;
 	int current_row = int((texture_id / 8.0) + 1); // texture_id
 	float uv_x = float((texture_id / 8.0) - (current_row - 1)); // texture_id
 	float uv_y = float((current_row - 1) / 8.0);
 
     // For some reason, the x axis is flipped, so we un-flip it in this offset.
-    vec2 uv_offset = vec2(1 - (uv_x + normalised_block_texture_size), uv_y);
+    vec2 uv_offset = vec2(1 - (uv_x + normalised_voxel_texture_size), uv_y);
 
     //uv += uv_offsets[uv_indices[uv_index]];
 
