@@ -56,7 +56,9 @@ class World:
 
 			new_voxel_type.texture_ids = new_list
 			data.voxel[item] = new_voxel_type
+
 			data.voxel_string_id[numba.types.uint8(voxel_type_numeric_id)] = item
+			data.voxel_numeric_id[item] = numba.types.uint8(voxel_type_numeric_id)
 
 			voxel_type_numeric_id += 1
 

@@ -16,7 +16,7 @@ class ChunkMesh(BaseMesh):
 		self.voxel_data = chunk.voxel_data
 		
 		# Make sure to change the VBO format if new vertex attributes are added.
-		self.vbo_format = "1u4"  # 1 unsigned 32-bit.
+		self.vbo_format = "1u4"  # 1 unsigned 32-bit integer.
 		self.format_size = sum(int(fmt[:1]) for fmt in self.vbo_format.split())
 
 

@@ -1,6 +1,7 @@
 from noise import noise2, noise3
 from random import random
 from source.settings import *
+from source.data_definitions import *
 
 
 @njit(cache=True)
@@ -17,8 +18,8 @@ def get_height(x, z):
 	f1 = 0.005
 	f2, f4, f8 = f1 * 2, f1 * 4, f1 * 8
 	
-	if noise2(0.1 * x, 0.1 * z) < 0:
-		a1 /= 1.07
+	#if noise2(0.1 * x, 0.1 * z) < 0:
+	#	a1 /= 1.07
 	
 	height = 0
 	height += noise2(x * f1, z * f1) * a1 + a1
@@ -39,7 +40,7 @@ def get_index(x, y, z):
 
 
 @njit(cache=True)
-def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height):
+def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height, voxel_data: VoxelDataDictionary):
 	# This is pretty much where all the terrain generation happens.
 	
 	voxel_id = 0
@@ -51,31 +52,31 @@ def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height):
 			voxel_id = 0
 		
 		else:
-			voxel_id = STONE
+			voxel_id = voxel_data.voxel_numeric_id["stone"]
 	else:
 		rng = int(7 * random())
 		ry = wy - rng
 		if SNOW_LVL <= ry < world_height:
-			voxel_id = SNOW
+			voxel_id = voxel_data.voxel_numeric_id["stone"]
 		
 		elif STONE_LVL <= ry < SNOW_LVL:
-			voxel_id = STONE
+			voxel_id = voxel_data.voxel_numeric_id["stone"]
 		
 		elif DIRT_LVL <= ry < STONE_LVL:
-			voxel_id = DIRT
+			voxel_id = voxel_data.voxel_numeric_id["dirt"]
 		
 		elif GRASS_LVL <= ry < DIRT_LVL:
-			voxel_id = GRASS
+			voxel_id = voxel_data.voxel_numeric_id["grass_block"]
 		
 		else:
-			voxel_id = SAND
+			voxel_id = voxel_data.voxel_numeric_id["black_sand"]
 	
 	# Setting ID.
 	voxels[get_index(x, y, z)] = voxel_id
 	
 	# Place tree.
-	if wy < DIRT_LVL:
-		place_tree(voxels, x, y, z, voxel_id)
+	#if wy < DIRT_LVL:
+	#	place_tree(voxels, x, y, z, voxel_id)
 
 
 @njit(cache=True)

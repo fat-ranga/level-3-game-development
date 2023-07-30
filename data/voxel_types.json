@@ -45,6 +45,12 @@
   "name": "Diamond Ore",
   "is_solid": true,
   "texture_ids":["diamond","diamond","diamond","diamond","diamond","diamond"]
+},
+
+"black_sand": {
+  "name": "Black Sand",
+  "is_solid": true,
+  "texture_ids":["black_sand","black_sand","black_sand","black_sand","black_sand","black_sand"]
 }
 
 }

@@ -39,7 +39,7 @@ class Chunk:
 		# Determine the world co-ordinates of the chunks, relative to all voxels.
 		# Using these, we can find the world co-ordinates of the current voxel.
 		cx, cy, cz = glm.ivec3(self.position) * CHUNK_SIZE
-		self.generate_terrain(voxels, cx, cy, cz)
+		self.generate_terrain(voxels, cx, cy, cz, self.voxel_data)
 		
 		# Chunk is not empty if it has any voxel id apart from 0 (TODO change to air).
 		if np.any(voxels):
@@ -48,7 +48,7 @@ class Chunk:
 	
 	@staticmethod
 	@njit(cache=True)
-	def generate_terrain(voxels, cx, cy, cz):
+	def generate_terrain(voxels, cx, cy, cz, voxel_data: VoxelDataDictionary):
 		for x in range(CHUNK_SIZE):
 			wx = x + cx
 			for z in range(CHUNK_SIZE):
@@ -58,4 +58,4 @@ class Chunk:
 				
 				for y in range(local_height):
 					wy = y + cy
-					set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height)
+					set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height, voxel_data)
