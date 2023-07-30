@@ -4,7 +4,7 @@ from source.settings import *
 import moderngl as mgl
 import pygame as pg
 import sys
-from shader_program import ShaderProgram
+from source.shader_program import ShaderProgram
 from source.scene import Scene
 from source.player import Player
 from source.textures import Textures
@@ -86,6 +86,6 @@ class Main:
 # Magical Python thing!
 if __name__ == '__main__':
 	# Temporary hack to make working directory the base directory of the project.
-	os.chdir("../")
+	#os.chdir("../")
 	game = Main()
 	game.run()

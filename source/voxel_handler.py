@@ -1,4 +1,4 @@
-from settings import *
+from source.settings import *
 from source.meshes.chunk_mesh_builder import get_chunk_index
 
 

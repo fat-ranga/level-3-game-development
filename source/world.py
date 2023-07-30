@@ -62,8 +62,6 @@ class World:
 
 			voxel_type_numeric_id += 1
 
-			print(new_voxel_type.name)
-
 		for key in self.texture_ids:
 			data.texture_id[key] = numba.types.uint64(self.texture_ids[key])
 

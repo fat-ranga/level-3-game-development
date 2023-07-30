@@ -43,7 +43,7 @@ def get_ao(local_pos, world_pos, world_voxels, plane):
 	return ao
 
 
-@njit(cache=False)
+@njit(cache=True)
 def pack_data(x, y, z, texture_id, face_id, ao_id, flip_id):
 	# x: 6bit  y: 6bit  z: 6bit  texture_id: 8bit  face_id: 3bit  ao_id: 2bit  flip_id: 1bit
 	a, b, c, d, e, f, g = x, y, z, texture_id, face_id, ao_id, flip_id
@@ -105,7 +105,7 @@ def add_data(vertex_data, index, *vertices):
 
 
 # We need to form a mesh of faces based on what voxels are visible to us.
-@njit(cache=False)
+@njit(cache=True)
 def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_data: VoxelDataDictionary):
 	# The size of this array is based on the following:
 	#

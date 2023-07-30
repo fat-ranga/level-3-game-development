@@ -1,47 +1,42 @@
-from noise import noise2, noise3
-from random import random
+import math
+
+from source.noise import noise2, noise3
 from source.settings import *
 from source.data_definitions import *
+from random import random
 
 
-@njit(cache=True)
+@njit(cache=False)
 def get_height(x, z):
-	# Island mask.
-	island = 1 / (pow(0.0025 * math.hypot(x - CENTER_XZ, z - CENTER_XZ), 20) + 0.0001)
-	island = min(island, 1)
-	
+
 	# Amplitude.
 	a1 = CENTER_Y
 	a2, a4, a8 = a1 * 0.5, a1 * 0.25, a1 * 0.125
-	
+
 	# Frequency.
 	f1 = 0.005
 	f2, f4, f8 = f1 * 2, f1 * 4, f1 * 8
-	
-	#if noise2(0.1 * x, 0.1 * z) < 0:
-	#	a1 /= 1.07
-	
+
 	height = 0
 	height += noise2(x * f1, z * f1) * a1 + a1
 	height += noise2(x * f2, z * f2) * a2 - a2
 	height += noise2(x * f4, z * f4) * a4 + a4
 	height += noise2(x * f8, z * f8) * a8 - a8
-	
-	height = max(height,  noise2(x * f8, z * f8) + 2)
-	height *= island
-	
+
+	height = max(height, noise2(x * f8, z * f8) + 2)
+
 	return int(height)
 
 
-@njit(cache=True)
+@njit(cache=False)
 def get_index(x, y, z):
 	# TODO: cache coherency
 	return x + CHUNK_SIZE * z + CHUNK_AREA * y
 
 
-@njit(cache=True)
+@njit(cache=False)
 def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height, voxel_data: VoxelDataDictionary):
-	# This is pretty much where all the terrain generation happens.
+	# The type of voxel is determined here, such as grass, stone, sand etc.
 	
 	voxel_id = 0
 	
@@ -63,7 +58,7 @@ def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height, voxel_data: VoxelDat
 			voxel_id = voxel_data.voxel_numeric_id["stone"]
 		
 		elif DIRT_LVL <= ry < STONE_LVL:
-			voxel_id = voxel_data.voxel_numeric_id["dirt"]
+			voxel_id = voxel_data.voxel_numeric_id["stone"]
 		
 		elif GRASS_LVL <= ry < DIRT_LVL:
 			voxel_id = voxel_data.voxel_numeric_id["grass_block"]
