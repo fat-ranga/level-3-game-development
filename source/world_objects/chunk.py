@@ -21,7 +21,7 @@ class Chunk:
 		return m_model
 	
 	def set_uniform(self):
-		self.mesh.program['m_model'].write(self.m_model)
+		self.mesh.program["m_model"].write(self.m_model)
 	
 	def build_mesh(self):
 		self.mesh = ChunkMesh(self)
@@ -34,7 +34,7 @@ class Chunk:
 	
 	def build_voxels(self):
 		# Start the chunk as an empty, one-dimensional array of 8-bit numbers.
-		voxels = np.zeros(CHUNK_VOL, dtype='uint8')
+		voxels = np.zeros(CHUNK_VOL, dtype="uint8")
 		
 		# Determine the world co-ordinates of the chunks, relative to all voxels.
 		# Using these, we can find the world co-ordinates of the current voxel.
@@ -47,7 +47,7 @@ class Chunk:
 		return voxels
 	
 	@staticmethod
-	@njit(cache=True)
+	@njit(cache=LLVM_CACHE_MODE)
 	def generate_terrain(voxels, cx, cy, cz, voxel_data: VoxelDataDictionary):
 		for x in range(CHUNK_SIZE):
 			wx = x + cx

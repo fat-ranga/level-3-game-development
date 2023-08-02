@@ -10,18 +10,18 @@ class CloudMesh(BaseMesh):
 		
 		self.ctx = self.game.ctx
 		self.program = self.game.shader_program.clouds
-		self.vbo_format = '3u2'
-		self.attrs = ('in_position',)
+		self.vbo_format = "3u2"
+		self.attrs = ("in_position",)
 		self.vao = self.get_vao()
 	
 	def get_vertex_data(self):
-		cloud_data = np.zeros(WORLD_AREA * CHUNK_SIZE ** 2, dtype='uint8')
+		cloud_data = np.zeros(WORLD_AREA * CHUNK_SIZE ** 2, dtype="uint8")
 		self.gen_clouds(cloud_data)
 		
 		return self.build_mesh(cloud_data)
 	
 	@staticmethod
-	@njit(cache=True)
+	@njit(cache=LLVM_CACHE_MODE)
 	def gen_clouds(cloud_data):
 		for x in range(WORLD_W * CHUNK_SIZE):
 			for z in range(WORLD_D * CHUNK_SIZE):
@@ -31,9 +31,9 @@ class CloudMesh(BaseMesh):
 				cloud_data[x + WORLD_W * CHUNK_SIZE * z] = 1
 	
 	@staticmethod
-	@njit(cache=True)
+	@njit(cache=LLVM_CACHE_MODE)
 	def build_mesh(cloud_data):
-		mesh = np.empty(WORLD_AREA * CHUNK_AREA * 6 * 3, dtype='uint16')
+		mesh = np.empty(WORLD_AREA * CHUNK_AREA * 6 * 3, dtype="uint16")
 		index = 0
 		width = WORLD_W * CHUNK_SIZE
 		depth = WORLD_D * CHUNK_SIZE

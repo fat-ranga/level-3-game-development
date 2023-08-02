@@ -20,7 +20,7 @@ class World:
 		# These are the actual voxels, all of our chunks only have a pointer to this.
 		# dtype='uint8' means we store each voxel as an unsigned 8-bit integer, which
 		# means we can have up to 256 different block types.
-		self.voxels = np.empty([WORLD_VOL, CHUNK_VOL], dtype='uint8')
+		self.voxels = np.empty([WORLD_VOL, CHUNK_VOL], dtype="uint8")
 		self.build_chunks()
 		self.build_chunk_mesh()
 		self.voxel_handler = VoxelHandler(self)

@@ -15,6 +15,9 @@ class Main:
 		pg.init()
 		pg.display.set_caption("Kiwicraft")
 
+		icon = pg.image.load("data/icon.png")
+		pg.display.set_icon(icon)
+
 		# Bunch of OpenGL boilerplate stuff.
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, MAJOR_VER)
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, MINOR_VER)
@@ -25,13 +28,13 @@ class Main:
 		pg.display.gl_set_attribute(pg.GL_MULTISAMPLESAMPLES, NUM_SAMPLES)
 		
 		# Set window resolution from settings and set OpenGl context.
-		pg.display.set_mode(WINDOW_RESOLUTION, flags=pg.OPENGL | pg.DOUBLEBUF)
+		pg.display.set_mode(WINDOW_RESOLUTION, flags=pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE)
 		self.ctx = mgl.create_context()
 		
 		# Enable fragment depth-testing, culling of invisible faces and colour blending.
 		self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
 		# Automatic garbage collection for OpenGL objects.
-		self.ctx.gc_mode = 'auto'
+		self.ctx.gc_mode = "auto"
 		
 		self.clock = pg.time.Clock()
 		self.delta_time = 0 # Time between frames.
@@ -39,6 +42,8 @@ class Main:
 
 		# Makes the current window active, I believe!
 		pg.event.set_grab(True)
+
+		# Hides the mouse.
 		pg.mouse.set_visible(False)
 		
 		self.is_running = True
@@ -61,7 +66,7 @@ class Main:
 		
 		self.delta_time = self.clock.tick()
 		self.time = pg.time.get_ticks() * 0.001
-		pg.display.set_caption(f'{self.clock.get_fps() :.0f}')
+		pg.display.set_caption(f"{self.clock.get_fps() :.0f}")
 	
 	def render(self):
 		self.ctx.clear(color=BG_COLOUR) # Clear frame and depth buffers.
@@ -70,8 +75,13 @@ class Main:
 	
 	def handle_events(self):
 		for event in pg.event.get():
-			if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+			if event.type == pg.QUIT:
 				self.is_running = False
+			if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+				pg.event.set_grab(False)
+
+				# Hides the mouse.
+				pg.mouse.set_visible(True)
 			self.player.handle_event(event=event)
 	
 	def run(self):
@@ -84,7 +94,7 @@ class Main:
 
 
 # Magical Python thing!
-if __name__ == '__main__':
+if __name__ == "__main__":
 	# Temporary hack to make working directory the base directory of the project.
 	#os.chdir("../")
 	game = Main()

@@ -9,14 +9,14 @@ class CubeMesh(BaseMesh):
 		self.ctx = self.game.ctx
 		self.program = self.game.shader_program.voxel_marker
 		
-		self.vbo_format = '2f2 3f2'
-		self.attrs = ('in_tex_coord_0', 'in_position',)
+		self.vbo_format = "2f2 3f2"
+		self.attrs = ("in_tex_coord_0", "in_position",)
 		self.vao = self.get_vao()
 	
 	@staticmethod
 	def get_data(vertices, indices):
 		data = [vertices[ind] for triangle in indices for ind in triangle]
-		return np.array(data, dtype='float16')
+		return np.array(data, dtype="float16")
 	
 	def get_vertex_data(self):
 		vertices = [

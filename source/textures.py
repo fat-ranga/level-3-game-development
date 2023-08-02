@@ -9,8 +9,8 @@ class Textures:
 		self.atlas_packer = TextureAtlasPacker()
 		
 		# Load textures.
-		self.texture_0 = self.load('frame.png')
-		self.texture_1 = self.load('water.png')
+		self.texture_0 = self.load("voxel_outline.png")
+		self.texture_1 = self.load("water.png")
 		
 		# Make the atlas texture.
 		self.texture_paths: list = self.atlas_packer.get_texture_paths_in_directory()
@@ -28,19 +28,19 @@ class Textures:
 		texture = self.ctx.texture(
 			size=texture.get_size(),
 			components=4,
-			data=pg.image.tostring(texture, 'RGBA', False)
+			data=pg.image.tostring(texture, "RGBA", False)
 		)
 
 		texture.filter = (mgl.NEAREST, mgl.NEAREST)
 		return texture
 	def load(self, file_name):
-		texture = pg.image.load(f'data/{file_name}')
+		texture = pg.image.load(f"data/{file_name}")
 		texture = pg.transform.flip(texture, flip_x=True, flip_y=False)
 
 		texture = self.ctx.texture(
 			size=texture.get_size(),
 			components=4,
-			data=pg.image.tostring(texture, 'RGBA', False)
+			data=pg.image.tostring(texture, "RGBA", False)
 		)
 		texture.anisotropy = 32.0
 		texture.build_mipmaps()

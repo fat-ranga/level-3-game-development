@@ -4,12 +4,12 @@ from source.data_definitions import *
 from numba import typed, types, typeof
 from numba import jit
 
-@njit(cache=True)
+@njit(cache=LLVM_CACHE_MODE)
 def get_ao(local_pos, world_pos, world_voxels, plane):
 	x, y, z = local_pos
 	wx, wy, wz = world_pos
 
-	if plane == 'Y':
+	if plane == "Y":
 		a = is_void((x    , y, z - 1), (wx    , wy, wz - 1), world_voxels)
 		b = is_void((x - 1, y, z - 1), (wx - 1, wy, wz - 1), world_voxels)
 		c = is_void((x - 1, y, z    ), (wx - 1, wy, wz    ), world_voxels)
@@ -19,7 +19,7 @@ def get_ao(local_pos, world_pos, world_voxels, plane):
 		g = is_void((x + 1, y, z    ), (wx + 1, wy, wz    ), world_voxels)
 		h = is_void((x + 1, y, z - 1), (wx + 1, wy, wz - 1), world_voxels)
 
-	elif plane == 'X':
+	elif plane == "X":
 		a = is_void((x, y    , z - 1), (wx, wy    , wz - 1), world_voxels)
 		b = is_void((x, y - 1, z - 1), (wx, wy - 1, wz - 1), world_voxels)
 		c = is_void((x, y - 1, z    ), (wx, wy - 1, wz    ), world_voxels)
@@ -43,7 +43,7 @@ def get_ao(local_pos, world_pos, world_voxels, plane):
 	return ao
 
 
-@njit(cache=True)
+@njit(cache=LLVM_CACHE_MODE)
 def pack_data(x, y, z, texture_id, face_id, ao_id, flip_id):
 	# x: 6bit  y: 6bit  z: 6bit  texture_id: 8bit  face_id: 3bit  ao_id: 2bit  flip_id: 1bit
 	a, b, c, d, e, f, g = x, y, z, texture_id, face_id, ao_id, flip_id
@@ -66,7 +66,7 @@ def pack_data(x, y, z, texture_id, face_id, ao_id, flip_id):
 	return packed_data
 
 
-@njit(cache=True)
+@njit(cache=LLVM_CACHE_MODE)
 def get_chunk_index(world_voxel_pos):
 	wx, wy, wz = world_voxel_pos
 	cx = wx // CHUNK_SIZE
@@ -80,7 +80,7 @@ def get_chunk_index(world_voxel_pos):
 	return index
 
 
-@njit(cache=True)
+@njit(cache=LLVM_CACHE_MODE)
 def is_void(local_voxel_pos, world_voxel_pos, world_voxels):
 	chunk_index = get_chunk_index(world_voxel_pos)
 	if chunk_index == -1:
@@ -96,7 +96,7 @@ def is_void(local_voxel_pos, world_voxel_pos, world_voxels):
 	return True
 
 
-@njit(cache=True)
+@njit(cache=LLVM_CACHE_MODE)
 def add_data(vertex_data, index, *vertices):
 	for vertex in vertices:
 		vertex_data[index] = vertex
@@ -105,7 +105,7 @@ def add_data(vertex_data, index, *vertices):
 
 
 # We need to form a mesh of faces based on what voxels are visible to us.
-@njit(cache=True)
+@njit(cache=LLVM_CACHE_MODE)
 def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_data: VoxelDataDictionary):
 	# The size of this array is based on the following:
 	#
@@ -116,7 +116,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_d
 	# Each of these attributes is stored as a single unsigned byte: 0-255.
 	# Make sure the amount of bits in d_type matches that of the packed data.
 
-	vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype='uint32')
+	vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype="uint32")
 	index = 0
 
 	#print(voxel_types.voxel_types["air"].is_solid)
@@ -144,7 +144,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_d
 				if is_void((x, y + 1, z), (wx, wy + 1, wz), world_voxels):
 					texture_id = voxel_data.texture_id[current_voxel.texture_ids[0]]
 					# get ao values
-					ao = get_ao((x, y + 1, z), (wx, wy + 1, wz), world_voxels, plane='Y')
+					ao = get_ao((x, y + 1, z), (wx, wy + 1, wz), world_voxels, plane="Y")
 					# Determine whether to flip the triangles of a face based on the ambient
 					# occlusion values, so that we don't get directional artifacts.
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
@@ -166,7 +166,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_d
 				# bottom face
 				if is_void((x, y - 1, z), (wx, wy - 1, wz), world_voxels):
 					texture_id = voxel_data.texture_id[current_voxel.texture_ids[1]]
-					ao = get_ao((x, y - 1, z), (wx, wy - 1, wz), world_voxels, plane='Y')
+					ao = get_ao((x, y - 1, z), (wx, wy - 1, wz), world_voxels, plane="Y")
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					v0 = pack_data(x    , y, z    , texture_id, 1, ao[0], flip_id)
@@ -182,7 +182,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_d
 				# right face
 				if is_void((x + 1, y, z), (wx + 1, wy, wz), world_voxels):
 					texture_id = voxel_data.texture_id[current_voxel.texture_ids[2]]
-					ao = get_ao((x + 1, y, z), (wx + 1, wy, wz), world_voxels, plane='X')
+					ao = get_ao((x + 1, y, z), (wx + 1, wy, wz), world_voxels, plane="X")
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					v0 = pack_data(x + 1, y    , z    , texture_id, 2, ao[0], flip_id)
@@ -198,7 +198,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_d
 				# left face
 				if is_void((x - 1, y, z), (wx - 1, wy, wz), world_voxels):
 					texture_id = voxel_data.texture_id[current_voxel.texture_ids[3]]
-					ao = get_ao((x - 1, y, z), (wx - 1, wy, wz), world_voxels, plane='X')
+					ao = get_ao((x - 1, y, z), (wx - 1, wy, wz), world_voxels, plane="X")
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					v0 = pack_data(x, y    , z    , texture_id, 3, ao[0], flip_id)
@@ -214,7 +214,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_d
 				# back face
 				if is_void((x, y, z - 1), (wx, wy, wz - 1), world_voxels):
 					texture_id = voxel_data.texture_id[current_voxel.texture_ids[4]]
-					ao = get_ao((x, y, z - 1), (wx, wy, wz - 1), world_voxels, plane='Z')
+					ao = get_ao((x, y, z - 1), (wx, wy, wz - 1), world_voxels, plane="Z")
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					v0 = pack_data(x,     y,     z, texture_id, 4, ao[0], flip_id)
@@ -231,7 +231,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels, voxel_d
 				if is_void((x, y, z + 1), (wx, wy, wz + 1), world_voxels):
 					texture_id = voxel_data.texture_id[current_voxel.texture_ids[5]]
 
-					ao = get_ao((x, y, z + 1), (wx, wy, wz + 1), world_voxels, plane='Z')
+					ao = get_ao((x, y, z + 1), (wx, wy, wz + 1), world_voxels, plane="Z")
 					flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
 					v0 = pack_data(x    , y    , z + 1, texture_id, 5, ao[0], flip_id)

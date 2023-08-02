@@ -6,7 +6,7 @@ from source.data_definitions import *
 from random import random
 
 
-@njit(cache=False)
+@njit(cache=LLVM_CACHE_MODE)
 def get_height(x, z):
 
 	# Amplitude.
@@ -28,13 +28,13 @@ def get_height(x, z):
 	return int(height)
 
 
-@njit(cache=False)
+@njit(cache=LLVM_CACHE_MODE)
 def get_index(x, y, z):
 	# TODO: cache coherency
 	return x + CHUNK_SIZE * z + CHUNK_AREA * y
 
 
-@njit(cache=False)
+@njit(cache=LLVM_CACHE_MODE)
 def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height, voxel_data: VoxelDataDictionary):
 	# The type of voxel is determined here, such as grass, stone, sand etc.
 	
@@ -74,7 +74,7 @@ def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height, voxel_data: VoxelDat
 	#	place_tree(voxels, x, y, z, voxel_id)
 
 
-@njit(cache=True)
+@njit(cache=LLVM_CACHE_MODE)
 def place_tree(voxels, x, y, z, voxel_id):
 	rnd = random()
 	if voxel_id != GRASS or rnd > TREE_PROBABILITY:

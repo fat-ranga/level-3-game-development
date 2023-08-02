@@ -7,7 +7,7 @@ class Clouds:
 		self.mesh = CloudMesh(game)
 	
 	def update(self):
-		self.mesh.program['u_time'] = self.game.time
+		self.mesh.program["u_time"] = self.game.time
 	
 	def render(self):
 		self.mesh.render()

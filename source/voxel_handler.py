@@ -59,17 +59,40 @@ class VoxelHandler:
 			self.rebuild_adj_chunk((wx, wy, wz + 1))
 	
 	def remove_voxel(self):
-		if self.voxel_id:
+		if not self.voxel_id:
+			return
+
+		self.chunk.voxels[self.voxel_index] = 0
+
+		self.chunk.mesh.rebuild()
+		self.rebuild_adjacent_chunks()
+
+	def set_voxel(self, input_id: int):
+		if not self.voxel_id:
+			return
+
+		if input_id == input_map["place_voxel"]:
+			# Check voxel ID along normal.
+			result = self.get_voxel_id(self.voxel_world_pos + self.voxel_normal)
+
+			# Is the new place empty?
+			if not result[0]:
+				# TODO: Syntax :(
+				_, voxel_index, _, chunk = result
+				chunk.voxels[voxel_index] = self.new_voxel_id
+				chunk.mesh.rebuild()
+
+				# Was it an empty chunk?
+				if chunk.is_empty:
+					chunk.is_empty = False
+			return
+
+		if input_id == input_map["break_voxel"]:
 			self.chunk.voxels[self.voxel_index] = 0
-			
+
 			self.chunk.mesh.rebuild()
 			self.rebuild_adjacent_chunks()
-	
-	def set_voxel(self):
-		if self.interaction_mode:
-			self.add_voxel()
-		else:
-			self.remove_voxel()
+
 	
 	def switch_mode(self):
 		self.interaction_mode = not self.interaction_mode
