@@ -9,7 +9,7 @@ class Textures:
 		self.atlas_packer = TextureAtlasPacker()
 		
 		# Load textures.
-		self.texture_0 = self.load("voxel_outline.png")
+		self.texture_0 = self.load("ui/voxel_outline.png")
 		self.texture_1 = self.load("water.png")
 		
 		# Make the atlas texture.
@@ -34,7 +34,7 @@ class Textures:
 		texture.filter = (mgl.NEAREST, mgl.NEAREST)
 		return texture
 	def load(self, file_name):
-		texture = pg.image.load(f"data/{file_name}")
+		texture = pg.image.load(f"data/textures/{file_name}")
 		texture = pg.transform.flip(texture, flip_x=True, flip_y=False)
 
 		texture = self.ctx.texture(

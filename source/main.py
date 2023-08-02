@@ -8,6 +8,7 @@ from source.shader_program import ShaderProgram
 from source.scene import Scene
 from source.player import Player
 from source.textures import Textures
+from source.user_interface import *
 
 
 class Main:
@@ -54,6 +55,7 @@ class Main:
 		self.player = Player(self)
 		self.shader_program = ShaderProgram(self)
 		self.scene = Scene(self, texture_ids=self.textures.atlas_packer.texture_ids)
+		self.cool_button_au = Button()
 
 		# TODO: better way to pass this data?
 		#self.scene.world.texture_ids = self.textures.atlas_packer.texture_ids
@@ -79,9 +81,8 @@ class Main:
 				self.is_running = False
 			if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
 				pg.event.set_grab(False)
-
-				# Hides the mouse.
 				pg.mouse.set_visible(True)
+
 			self.player.handle_event(event=event)
 	
 	def run(self):

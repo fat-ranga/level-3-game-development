@@ -12,7 +12,7 @@ Z_DEPTH_SIZE = 24
 # If there's a random bug that we can't solve, try setting the cache to False.
 # When the game is exported, we always want this to be set to True, so end-users
 # don't have to wait as long.
-LLVM_CACHE_MODE: bool = False
+LLVM_CACHE_MODE: bool = True
 
 # Antialiasing. Can cause line artifacts in-between triangles
 # that have edges that share the same position.

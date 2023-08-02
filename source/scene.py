@@ -19,7 +19,7 @@ class Scene:
 		self.clouds.update()
 	
 	def render(self):
-		# chunks rendering
+		# Render chunks and stuff.
 		self.world.render()
 		
 		# rendering without cull face
@@ -28,5 +28,5 @@ class Scene:
 		self.water.render()
 		self.game.ctx.enable(mgl.CULL_FACE)
 		
-		# voxel selection
+		# Render player's voxel selection marker.
 		self.voxel_marker.render()
