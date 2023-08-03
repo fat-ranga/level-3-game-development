@@ -2,7 +2,7 @@ from source.settings import *
 from source.meshes.base_mesh import BaseMesh
 
 
-class QuadMesh(BaseMesh):
+class WaterMesh(BaseMesh):
 	def __init__(self, game):
 		super().__init__()
 		self.game = game

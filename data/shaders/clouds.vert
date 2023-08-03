@@ -15,7 +15,7 @@ void main() {
     pos.xz *= cloud_scale;
     pos.xz += center;
 
-    float time = 300 * sin(0.01 * u_time);
+    float time = 300 * sin(0.02 * u_time);
     pos.xz += time;
     gl_Position = m_proj * m_view * vec4(pos, 1.0);
 //    gl_Position = m_view_proj * vec4(pos, 1.0);

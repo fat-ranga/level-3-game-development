@@ -1,5 +1,6 @@
 import os
 
+import source.settings
 from source.settings import *
 import moderngl as mgl
 import pygame as pg
@@ -55,11 +56,6 @@ class Main:
 		self.player = Player(self)
 		self.shader_program = ShaderProgram(self)
 		self.scene = Scene(self, texture_ids=self.textures.atlas_packer.texture_ids)
-		self.cool_button_au = Button()
-
-		# TODO: better way to pass this data?
-		#self.scene.world.texture_ids = self.textures.atlas_packer.texture_ids
-		#print("from main" + str(self.textures.atlas_packer.texture_ids))
 	
 	def update(self):
 		self.player.update()
@@ -82,6 +78,9 @@ class Main:
 			if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
 				pg.event.set_grab(False)
 				pg.mouse.set_visible(True)
+			if event.type == pg.VIDEORESIZE:
+				for_real = event.size
+				# TODO: pass settings from main, same with input_map?
 
 			self.player.handle_event(event=event)
 	

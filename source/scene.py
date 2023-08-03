@@ -3,6 +3,7 @@ from source.world import World
 from source.world_objects.voxel_marker import VoxelMarker
 from source.world_objects.water import Water
 from source.world_objects.clouds import Clouds
+from source.user_interface import Button
 
 
 class Scene:
@@ -12,6 +13,7 @@ class Scene:
 		self.voxel_marker = VoxelMarker(self.world.voxel_handler)
 		self.water = Water(game)
 		self.clouds = Clouds(game)
+		self.cool_quad = Button(game)
 	
 	def update(self):
 		self.world.update()
@@ -26,6 +28,8 @@ class Scene:
 		self.game.ctx.disable(mgl.CULL_FACE)
 		self.clouds.render()
 		self.water.render()
+		# Render UI.
+		self.cool_quad.render()
 		self.game.ctx.enable(mgl.CULL_FACE)
 		
 		# Render player's voxel selection marker.

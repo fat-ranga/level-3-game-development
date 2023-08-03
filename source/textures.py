@@ -11,6 +11,7 @@ class Textures:
 		# Load textures.
 		self.texture_0 = self.load("ui/voxel_outline.png")
 		self.texture_1 = self.load("water.png")
+		self.texture_2 = self.load("ui/kiwicraft.png")
 		
 		# Make the atlas texture.
 		self.texture_paths: list = self.atlas_packer.get_texture_paths_in_directory()
@@ -21,6 +22,7 @@ class Textures:
 		self.texture_0.use(location=0)
 		self.atlas_texture.use(location=1)
 		self.texture_1.use(location=2)
+		self.texture_2.use(location=3)
 	
 	def load_texture(self, texture):
 		texture = pg.transform.flip(texture, flip_x=True, flip_y=False)
