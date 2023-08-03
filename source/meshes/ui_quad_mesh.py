@@ -16,6 +16,9 @@ class QuadMesh(BaseMesh):
         self.attrs = ("in_position", "in_color")
         self.vao = self.get_vao()
 
+    def rebuild(self):
+        self.vao = self.get_vao()
+
     def ong_frfr(self, position: vec2, size: vec2):
         # Two triangles, z value is not needed, so it is left at 0.0.
         vertices = [

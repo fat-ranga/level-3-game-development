@@ -12,6 +12,7 @@ class ShaderProgram:
 		self.water = self.get_program("water")
 		self.clouds = self.get_program("clouds")
 		self.ui_quad = self.get_program("ui_quad")
+		self.crosshair = self.get_program("ui_quad")
 		# ------------------------- #
 		self.set_uniforms_on_init()
 	
@@ -41,7 +42,10 @@ class ShaderProgram:
 		self.clouds["cloud_scale"] = CLOUD_SCALE
 
 		# quad
-		self.ui_quad["u_texture_0"] = 3
+		# TODO: need to be able to change uniforms between draw calls
+		# Otherwise the texture is the same for every object that uses the same shader.
+		self.ui_quad["u_texture_0"] = 4
+		self.crosshair["u_texture_0"] = 4
 		#self.ui_quad['m_proj'].write(self.player.m_proj)
 	
 	def update(self):

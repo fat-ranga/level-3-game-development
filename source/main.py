@@ -42,11 +42,14 @@ class Main:
 		self.delta_time = 0 # Time between frames.
 		self.time = 0
 
+		self.grab_mode: bool = True
+		self.mouse_visible: bool = False
+
 		# Makes the current window active, I believe!
-		pg.event.set_grab(True)
+		pg.event.set_grab(self.grab_mode)
 
 		# Hides the mouse.
-		pg.mouse.set_visible(False)
+		pg.mouse.set_visible(self.mouse_visible)
 		
 		self.is_running = True
 		self.on_init()
@@ -76,8 +79,11 @@ class Main:
 			if event.type == pg.QUIT:
 				self.is_running = False
 			if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
-				pg.event.set_grab(False)
-				pg.mouse.set_visible(True)
+				self.grab_mode = not self.grab_mode
+				self.mouse_visible = not self.mouse_visible
+
+				pg.event.set_grab(self.grab_mode)
+				pg.mouse.set_visible(self.mouse_visible)
 			if event.type == pg.VIDEORESIZE:
 				for_real = event.size
 				# TODO: pass settings from main, same with input_map?
