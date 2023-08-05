@@ -15,7 +15,19 @@ class ShaderProgram:
 		self.crosshair = self.get_program("ui_quad")
 		# ------------------------- #
 		self.set_uniforms_on_init()
-	
+
+	# For when the player changes their FOV.
+	def update_projection_matrix(self):
+		# chunk
+		self.chunk["m_proj"].write(self.player.m_proj)
+		# marker
+		self.voxel_marker["m_proj"].write(self.player.m_proj)
+		# water
+		self.water["m_proj"].write(self.player.m_proj)
+		# clouds
+		self.clouds["m_proj"].write(self.player.m_proj)
+
+
 	def set_uniforms_on_init(self):
 		# chunk
 		self.chunk["m_proj"].write(self.player.m_proj)

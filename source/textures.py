@@ -12,7 +12,7 @@ class Textures:
 		self.texture_0 = self.load("ui/voxel_outline.png")
 		self.texture_1 = self.load("water.png")
 		self.texture_2 = self.load("ui/kiwicraft.png")
-		self.texture_3 = self.load("ui/crosshair.png")
+		self.texture_3 = self.load("ui/crosshair.png", filter=mgl.LINEAR)
 		
 		# Make the atlas texture.
 		self.texture_paths: list = self.atlas_packer.get_texture_paths_in_directory()
@@ -38,7 +38,7 @@ class Textures:
 
 		texture.filter = (mgl.NEAREST, mgl.NEAREST)
 		return texture
-	def load(self, file_name):
+	def load(self, file_name, filter=mgl.NEAREST):
 		texture = pg.image.load(f"data/textures/{file_name}")
 		texture = pg.transform.flip(texture, flip_x=True, flip_y=False)
 
@@ -47,7 +47,7 @@ class Textures:
 			components=4,
 			data=pg.image.tostring(texture, "RGBA", False)
 		)
-		texture.anisotropy = 32.0
+		#texture.anisotropy = 32.0
 		texture.build_mipmaps()
-		texture.filter = (mgl.NEAREST, mgl.NEAREST)
+		texture.filter = (filter, filter)
 		return texture

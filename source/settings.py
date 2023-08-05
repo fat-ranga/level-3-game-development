@@ -98,8 +98,21 @@ WATER_AREA = 5 * CHUNK_SIZE * WORLD_W
 CLOUD_SCALE = 25
 CLOUD_HEIGHT = WORLD_H * CHUNK_SIZE * 2
 
-# Input map.
-input_map: dict = {
-	"place_voxel": 3, # Left-click.
-	"break_voxel": 1, # Right-click.
-}
+
+# This class contains settings that can be changed by the user, and these
+# are saved between sessions using the config file.
+class SettingsProfile:
+	def __init__(self):
+		# Input map.
+		self.input_map: dict = {
+			"place_voxel": 3,  # Left-click.
+			"break_voxel": 1,  # Right-click.
+		}
+		# Resolution.
+		self.window_resolution: glm.vec2 = glm.vec2(720, 720)
+		self.mouse_sensitivity: float = 0.002
+		# Camera stuff.
+		self.aspect_ratio: float = self.window_resolution.x / self.window_resolution.y
+		self.fov_deg: int = 90
+		self.v_fov: float = glm.radians(FOV_DEG)  # Vertical Field of View.
+		self.h_fov: float = 2 * math.atan(math.tan(V_FOV * 0.5) * ASPECT_RATIO)  # Horizontal Field of View.

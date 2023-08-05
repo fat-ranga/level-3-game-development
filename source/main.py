@@ -20,6 +20,9 @@ class Main:
 		icon = pg.image.load("data/icon.png")
 		pg.display.set_icon(icon)
 
+		# Load settings from configuration file next to executable.
+		self.settings: SettingsProfile = self.load_settings()
+
 		# Bunch of OpenGL boilerplate stuff.
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, MAJOR_VER)
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, MINOR_VER)
@@ -30,7 +33,7 @@ class Main:
 		pg.display.gl_set_attribute(pg.GL_MULTISAMPLESAMPLES, NUM_SAMPLES)
 		
 		# Set window resolution from settings and set OpenGl context.
-		pg.display.set_mode(WINDOW_RESOLUTION, flags=pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE)
+		pg.display.set_mode(self.settings.window_resolution, flags=pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE)
 		self.ctx = mgl.create_context()
 		
 		# Enable fragment depth-testing, culling of invisible faces and colour blending.
@@ -53,7 +56,11 @@ class Main:
 		
 		self.is_running = True
 		self.on_init()
-	
+	def load_settings(self) -> SettingsProfile:
+		# TODO: read from config file
+
+		return SettingsProfile()
+
 	def on_init(self):
 		self.textures = Textures(self)
 		self.player = Player(self)
@@ -68,7 +75,7 @@ class Main:
 		self.delta_time = self.clock.tick()
 		self.time = pg.time.get_ticks() * 0.001
 		pg.display.set_caption(f"{self.clock.get_fps() :.0f}")
-	
+
 	def render(self):
 		self.ctx.clear(color=BG_COLOUR) # Clear frame and depth buffers.
 		self.scene.render()
@@ -78,15 +85,23 @@ class Main:
 		for event in pg.event.get():
 			if event.type == pg.QUIT:
 				self.is_running = False
+
 			if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
 				self.grab_mode = not self.grab_mode
 				self.mouse_visible = not self.mouse_visible
 
 				pg.event.set_grab(self.grab_mode)
 				pg.mouse.set_visible(self.mouse_visible)
+
 			if event.type == pg.VIDEORESIZE:
-				for_real = event.size
-				# TODO: pass settings from main, same with input_map?
+				# Update aspect ratio and stuff when the window is resized.
+				self.settings.window_resolution = vec2(event.size[0], event.size[1])
+				self.settings.aspect_ratio = self.settings.window_resolution.x / self.settings.window_resolution.y
+				self.settings.h_fov = 2 * math.atan(math.tan(self.settings.v_fov * 0.5) * self.settings.aspect_ratio)
+
+				self.scene.crosshair.mesh.rebuild()
+				self.player.update_projection_matrix()
+				self.shader_program.update_projection_matrix()
 
 			self.player.handle_event(event=event)
 	

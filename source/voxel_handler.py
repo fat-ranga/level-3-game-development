@@ -14,8 +14,7 @@ class VoxelHandler:
 		self.voxel_local_pos = None
 		self.voxel_world_pos = None
 		self.voxel_normal = None
-		
-		self.interaction_mode = 0  # 0: remove voxel   1: add voxel
+
 		self.new_voxel_id = DIRT
 	
 	def add_voxel(self):
@@ -71,7 +70,7 @@ class VoxelHandler:
 		if not self.voxel_id:
 			return
 
-		if input_id == input_map["place_voxel"]:
+		if input_id == self.game.settings.input_map["place_voxel"]:
 			# Check voxel ID along normal.
 			result = self.get_voxel_id(self.voxel_world_pos + self.voxel_normal)
 
@@ -87,20 +86,17 @@ class VoxelHandler:
 					chunk.is_empty = False
 			return
 
-		if input_id == input_map["break_voxel"]:
+		if input_id == self.game.settings.input_map["break_voxel"]:
 			self.chunk.voxels[self.voxel_index] = 0
 
 			self.chunk.mesh.rebuild()
 			self.rebuild_adjacent_chunks()
 
 	
-	def switch_mode(self):
-		self.interaction_mode = not self.interaction_mode
-	
 	def update(self):
 		self.ray_cast()
 	
-	# Big sweaty raycast function using voxel traversal, I do not understand it in the slightest!
+	# Big sweaty ray-cast function using voxel traversal, I do not understand it in the slightest!
 	def ray_cast(self):
 		# start point
 		x1, y1, z1 = self.game.player.position

@@ -5,8 +5,11 @@ from source.meshes.ui_quad_mesh import QuadMesh
 
 
 class Control:
-	def __init__(self):
+	def __init__(self, game):
+		self.game = game
+
 		self.visible: bool = True
+		self.keep_aspect: bool = True
 
 		# All relative to the Control's bounding box.
 		self.origin: vec2 = vec2(0.0, 1.0)  # In OpenGL it is bottom-left, this makes it top-left.
@@ -17,6 +20,11 @@ class Control:
 		# Position value is determined from the other values, and is not used directly.
 		self.position: vec2 = vec2(0.0, 0.0)  # Local position, relative to parent.
 		self.parent: Control = None
+
+	def resize(self):
+		pass
+
+		#self.position = self.size
 
 	def update(self):
 		if not self.visible:
@@ -45,7 +53,7 @@ class Button:
 
 class TextureRect(Control):
 	def __init__(self, game):
-		super().__init__()
+		super().__init__(game)
 		self.game = game
 		self.mesh = QuadMesh(self)
 
