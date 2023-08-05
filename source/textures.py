@@ -38,6 +38,7 @@ class Textures:
 
 		texture.filter = (mgl.NEAREST, mgl.NEAREST)
 		return texture
+
 	def load(self, file_name, filter=mgl.NEAREST):
 		texture = pg.image.load(f"data/textures/{file_name}")
 		texture = pg.transform.flip(texture, flip_x=True, flip_y=False)

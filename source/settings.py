@@ -57,7 +57,6 @@ PITCH_MAX = glm.radians(90)
 PLAYER_SPEED = 0.01
 PLAYER_ROT_SPEED = 0.003
 PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
-#PLAYER_POS = glm.vec3(CENTER_XZ, CHUNK_SIZE, CENTER_XZ)
 MOUSE_SENSITIVITY = 0.002
 
 # Background world colour.
@@ -116,3 +115,4 @@ class SettingsProfile:
 		self.fov_deg: int = 90
 		self.v_fov: float = glm.radians(FOV_DEG)  # Vertical Field of View.
 		self.h_fov: float = 2 * math.atan(math.tan(V_FOV * 0.5) * ASPECT_RATIO)  # Horizontal Field of View.
+		self.v_sync: int = 1  # 0 is False.

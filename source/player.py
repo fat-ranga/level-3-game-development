@@ -6,7 +6,7 @@ from source.settings import *
 class Player(Camera):
 	def __init__(self, game, position=PLAYER_POS, yaw=-90, pitch=0):
 		self.game = game
-		super().__init__(position, yaw, pitch) # Initialise camera stuff.
+		super().__init__(position, yaw, pitch, self.game.settings.v_fov, self.game.settings.aspect_ratio) # Initialise camera stuff.
 
 		self.is_left_mouse_button_held: bool = False
 		self.is_right_mouse_button_held: bool = False
