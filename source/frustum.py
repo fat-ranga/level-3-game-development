@@ -3,13 +3,20 @@ from source.settings import *
 class Frustum:
 	def __init__(self, camera):
 		self.cam: Camera = camera
-		
-		self.factor_y = 1.0 / math.cos(half_y := V_FOV * 0.5)
+
+		self.factor_y: float = 1.0 / math.cos(half_y := self.cam.v_fov * 0.5)
+		self.tan_y: float = math.tan(half_y)
+
+		self.factor_x: float = 1.0 / math.cos(half_x := self.cam.h_fov * 0.5)
+		self.tan_x: float = math.tan(half_x)
+
+	def update_factors(self):
+		self.factor_y = 1.0 / math.cos(half_y := self.cam.v_fov * 0.5)
 		self.tan_y = math.tan(half_y)
-		
-		self.factor_x = 1.0 / math.cos(half_x := H_FOV * 0.5)
+
+		self.factor_x = 1.0 / math.cos(half_x := self.cam.h_fov * 0.5)
 		self.tan_x = math.tan(half_x)
-	
+
 	def is_on_frustum(self, chunk):
 		# For culling chunks that aren't visible to the player.
 		

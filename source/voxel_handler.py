@@ -1,12 +1,12 @@
 from source.settings import *
 from source.meshes.chunk_mesh_builder import get_chunk_index
-
+from source.data_definitions import *
 
 class VoxelHandler:
 	def __init__(self, world):
 		self.game = world.game
 		self.chunks = world.chunks
-		
+
 		# Raycast result.
 		self.chunk = None
 		self.voxel_id = None

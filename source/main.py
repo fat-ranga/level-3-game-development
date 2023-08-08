@@ -10,6 +10,7 @@ from source.scene import Scene
 from source.player import Player
 from source.textures import Textures
 from source.user_interface import *
+from source.data_definitions import *
 
 
 class Main:
@@ -65,9 +66,14 @@ class Main:
 
 	def on_init(self):
 		self.textures = Textures(self)
-		self.player = Player(self)
+		self.voxel_data: VoxelDataDictionary = load_voxel_data(self,
+															   "data/voxel_types.json",
+															   self.textures.atlas_packer.texture_ids)
+		self.player = Player(self, self.voxel_data)
 		self.shader_program = ShaderProgram(self)
-		self.scene = Scene(self, texture_ids=self.textures.atlas_packer.texture_ids)
+		self.scene = Scene(self,
+						   texture_ids=self.textures.atlas_packer.texture_ids,
+						   voxel_data=self.voxel_data)
 
 	def update(self):
 		self.player.update()

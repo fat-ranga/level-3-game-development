@@ -7,15 +7,15 @@ from source.user_interface import *
 
 
 class Scene:
-	def __init__(self, game, texture_ids):
+	def __init__(self, game, texture_ids, voxel_data):
 		self.game = game
-		self.world = World(self.game, texture_ids=texture_ids)
+		self.world = World(self.game, texture_ids=texture_ids, voxel_data=voxel_data)
 		self.voxel_marker = VoxelMarker(self.world.voxel_handler)
 		self.water = Water(game)
 		self.clouds = Clouds(game)
 		self.cool_quad = Button(game)
 		self.crosshair = TextureRect(game)
-		self.crosshair.size = vec2(0.02, 0.04)
+		self.crosshair.size = vec2(0.02, 0.04) # TODO: fix scaling
 		self.crosshair.mesh.rebuild()
 	
 	def update(self):

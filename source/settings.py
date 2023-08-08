@@ -18,9 +18,6 @@ LLVM_CACHE_MODE: bool = False
 # that have edges that share the same position.
 NUM_SAMPLES = 0
 
-# Resolution.
-WINDOW_RESOLUTION = glm.vec2(1440, 720)
-
 # TODO World generation seed.
 SEED = 16
 
@@ -35,7 +32,7 @@ CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE
 CHUNK_SPHERE_RADIUS = H_CHUNK_SIZE * math.sqrt(3)
 
 # World.
-WORLD_W, WORLD_H = 4, 2
+WORLD_W, WORLD_H = 5, 2
 WORLD_D = WORLD_W
 WORLD_AREA = WORLD_W * WORLD_D
 WORLD_VOL = WORLD_AREA * WORLD_H
@@ -45,19 +42,16 @@ CENTER_XZ = WORLD_W * H_CHUNK_SIZE
 CENTER_Y = WORLD_H * H_CHUNK_SIZE
 
 # Camera stuff.
-ASPECT_RATIO = WINDOW_RESOLUTION.x / WINDOW_RESOLUTION.y
 FOV_DEG = 90
-V_FOV = glm.radians(FOV_DEG)  # Vertical Field of View.
-H_FOV = 2 * math.atan(math.tan(V_FOV * 0.5) * ASPECT_RATIO)  # Horizontal Field of View.
 NEAR = 0.1
 FAR = 2000.0
 PITCH_MAX = glm.radians(90)
 
 # Player.
+GRAVITY = 9.81
 PLAYER_SPEED = 0.01
 PLAYER_ROT_SPEED = 0.003
 PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
-MOUSE_SENSITIVITY = 0.002
 
 # Background world colour.
 BG_COLOUR = glm.vec3(0.58, 0.83, 0.99)
@@ -114,5 +108,5 @@ class SettingsProfile:
 		self.aspect_ratio: float = self.window_resolution.x / self.window_resolution.y
 		self.fov_deg: int = 90
 		self.v_fov: float = glm.radians(FOV_DEG)  # Vertical Field of View.
-		self.h_fov: float = 2 * math.atan(math.tan(V_FOV * 0.5) * ASPECT_RATIO)  # Horizontal Field of View.
+		self.h_fov: float = 2 * math.atan(math.tan(self.v_fov * 0.5) * self.aspect_ratio)  # Horizontal Field of View.
 		self.v_sync: int = 1  # 0 is False.

@@ -2,6 +2,7 @@
 	
 	
 "farmland": {
+  "map_hex_id" : "FFFFFF",
   "terrain_height": 70,
   "solid_ground_height": 20,
   "lodes": {

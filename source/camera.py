@@ -3,7 +3,11 @@ from source.frustum import Frustum
 
 
 class Camera:
-	def __init__(self, position, yaw, pitch, v_fov, aspect_ratio):
+	def __init__(self, position, yaw, pitch, v_fov, h_fov, aspect_ratio):
+		self.v_fov = v_fov
+		self.h_fov = h_fov
+		self.aspect_ratio = aspect_ratio
+
 		self.position = glm.vec3(position)
 		self.yaw = glm.radians(yaw)
 		self.pitch = glm.radians(pitch)

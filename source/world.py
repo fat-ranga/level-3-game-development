@@ -10,10 +10,10 @@ import json
 import numpy as np
 
 class World:
-	def __init__(self, game, texture_ids):
+	def __init__(self, game, texture_ids, voxel_data):
 		self.game = game
 		self.texture_ids = texture_ids
-		self.voxel_data = self.load_voxel_data()
+		self.voxel_data: VoxelDataDictionary = voxel_data
 		# TODO: explain weird syntax
 		self.chunks = [None for _ in range(WORLD_VOL)]
 
@@ -24,51 +24,6 @@ class World:
 		self.build_chunks()
 		self.build_chunk_mesh()
 		self.voxel_handler = VoxelHandler(self)
-
-	def load_voxel_data(self):
-
-		file = open("data/voxel_types.json")
-		json_file_fr = json.load(file)
-
-		# Convert the untyped Python dictionary generated from the json file
-		# to a typed dictionary of @jitclasses, since @njit functions cannot take in
-		# variables that aren't typed, such as Python dictionaries.
-		data = VoxelDataDictionary()
-
-		voxel_type_numeric_id: numba.types.int8 = numba.types.uint8(0)
-
-		for item in json_file_fr:
-			new_voxel_type = VoxelType()
-
-			new_voxel_type.string_id = item
-			new_voxel_type.name = json_file_fr[item]["name"]
-			new_voxel_type.is_solid = json_file_fr[item]["is_solid"]
-
-			# TODO: fix this to not be a reflected list, since those are pending deprecation by the Numba library.
-			# We have to make a new list because we cannot clear() the texture_ids list
-			# from the VoxelType() class for some reason. So we set it to be a new one instead.
-
-			# Can't make this list start off as empty, otherwise we get a memory footprint error or something.
-			new_list: numba.types.List(numba.types.string) = ["grass_side", "grass_side", "grass_top", "dirt", "grass_side", "grass_side"]
-			new_list.clear() # Delete the default values before appending new ones.
-			for id in json_file_fr[item]["texture_ids"]:
-				new_list.append(id)
-
-			new_voxel_type.texture_ids = new_list
-			data.voxel[item] = new_voxel_type
-
-			data.voxel_string_id[numba.types.uint8(voxel_type_numeric_id)] = item
-			data.voxel_numeric_id[item] = numba.types.uint8(voxel_type_numeric_id)
-
-			voxel_type_numeric_id += 1
-
-		for key in self.texture_ids:
-			data.texture_id[key] = numba.types.uint64(self.texture_ids[key])
-
-		#print(self.texture_ids)
-
-		#print(data.texture_id)
-		return data
 
 	@njit
 	def create_dict(self, items):
