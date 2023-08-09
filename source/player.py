@@ -116,50 +116,97 @@ class Player(Camera):
 		# Change velocity by our movement direction.
 		self.movement_direction *= PLAYER_SPEED * self.game.delta_time
 
-		self.velocity += self.movement_direction * 0.5
+		self.velocity += self.movement_direction * 0.25
 		self.velocity *= 0.75
 
 	def handle_collision(self):
-		#if self.collision(vec3(0, -2, 0)):
-		#	self.velocity.y = 0.01
-		#if self.collision(vec3(0, 1, 0)):
-		#	self.velocity.y -= 0.01
+		overall_velocity_change = vec3(0, 0, 0)
+
 
 		# Up and down.
-		#self.collision_depenetration(vec3(0, -2, 0), True, 1)
-		#self.collision_depenetration(vec3(0, 0, 0), False, 1)
+		if self.velocity.y > 0:
+			velocity_change = self.collision_depenetration(vec3(0, 0.2, 0), "Y")
+			self.velocity.y += velocity_change
+		else:
+			velocity_change = self.collision_depenetration(vec3(0, -1.7, 0), "Y")
+			self.velocity.y += velocity_change
 
-		# Left?
-		self.collision_depenetration(vec3(0, 0, 0), False, 0)
-		self.collision_depenetration(vec3(0, -1, 0), False, 0)
+		# Left (All of these directions are in world space).
+		if self.velocity.x < 0:
+			velocity_change = self.collision_depenetration(vec3(-0.4, 0.2, 0), "X")
+			self.velocity.x += velocity_change
+			velocity_change = self.collision_depenetration(vec3(-0.4, -0.95, 0), "X") # In-between top and bottom.
+			self.velocity.x += velocity_change
+			velocity_change = self.collision_depenetration(vec3(-0.4, -1.7, 0), "X")
+			self.velocity.x += velocity_change
 
-		# Right
-		#self.collision_depenetration(vec3(-1, 0, 0), False, 0)
-		#self.collision_depenetration(vec3(-1, -1, 0), False, 0)
-		#
-		## Back
-		#self.collision_depenetration(vec3(0, 0, 1), True, 2)
-		#self.collision_depenetration(vec3(0, -1, 1), True, 2)
-		#
-		## Front
-		#self.collision_depenetration(vec3(0, 0, -1), False, 2)
-		#self.collision_depenetration(vec3(0, -1, -1), False, 2)
+		# Right.
+		else:
+			velocity_change = self.collision_depenetration(vec3(0.4, 0.2, 0), "X")
+			self.velocity.x += velocity_change
+			velocity_change = self.collision_depenetration(vec3(0.4, -0.95, 0), "X")
+			self.velocity.x += velocity_change
+			velocity_change = self.collision_depenetration(vec3(0.4, -1.7, 0), "X")
+			self.velocity.x += velocity_change
 
-		#collision_position = (self.position + self.velocity) + vec3(0, -2, 0)
-		#if self.collision(collision_position) and self.velocity.y <= 0:
-		#	voxel_position = int(collision_position.y) # Floored.
-		#	velocity_change = collision_position.y - (voxel_position + 1)
-#
-		#	#ranga = (self.position.y - 2) - (voxel_position + 1)
-#
-		#	#print("previous position" + str(self.position.y))
-		#	#print("voxel pos" + str(voxel_position))
-		#	#print("collision position" + str(collision_position.y))
-		#	#print("upward needed" + str(ranga))
-#
-		#	self.velocity.y -= velocity_change
-#
-		#	#self.velocity.y = -ranga#gangster
+		# Back.
+		if self.velocity.z > 0:
+			velocity_change = self.collision_depenetration(vec3(0, 0.2, 0.4), "Z")
+			self.velocity.z += velocity_change
+			velocity_change = self.collision_depenetration(vec3(0, -0.95, 0.4), "Z")
+			self.velocity.z += velocity_change
+			velocity_change = self.collision_depenetration(vec3(0, -1.7, 0.4), "Z")
+			self.velocity.z += velocity_change
+
+		# Front.
+		else:
+			velocity_change = self.collision_depenetration(vec3(0, 0.2, -0.4), "Z")
+			self.velocity.z += velocity_change
+			velocity_change = self.collision_depenetration(vec3(0, -0.95, -0.4), "Z")
+			self.velocity.z += velocity_change
+			velocity_change = self.collision_depenetration(vec3(0, -1.7, -0.4), "Z")
+			self.velocity.z += velocity_change
+
+		# Change the actual velocity.
+		#self.velocity += overall_velocity_change
+
+	def collision_depenetration(self, offset: vec3, axis: str) -> float:
+		# Changes the player's velocity on a certain axis based on how far
+		# their next position will penetrate into a solid voxel.
+		collision_position: vec3 = (self.position + self.velocity) + offset
+
+		if self.collision(collision_position):
+
+			# Since voxel_position is floored, we need to increase it by 1
+			# if our offset axis is negative, otherwise our velocity gets changed
+			# by an extra metre.
+			if axis == "X":
+				collision_axis_position: float = collision_position.x
+				voxel_position: int = int(collision_axis_position)
+				if offset.x < 0:
+					voxel_position += 1
+			elif axis == "Y":
+				collision_axis_position: float = collision_position.y
+				voxel_position: int = int(collision_axis_position)
+				if offset.y < 0:
+					voxel_position += 1
+			elif axis == "Z":
+				collision_axis_position: float = collision_position.z
+				voxel_position: int = int(collision_axis_position)
+				if offset.z < 0:
+					voxel_position += 1
+			else:
+				print("Collision De-penetration: Axis not specified.")
+				return 0.0
+
+			velocity_change: float = voxel_position - collision_axis_position
+
+			print(voxel_position)
+			print(collision_axis_position)
+
+			return velocity_change
+		else:
+			return 0.0
 
 	def collision(self, position: vec3) -> bool:
 		voxel_handler = self.game.scene.world.voxel_handler
@@ -167,37 +214,8 @@ class Player(Camera):
 		position: glm.ivec3 = glm.ivec3(position)
 
 		# uint8
-		voxel_id = voxel_handler.get_voxel_id(position)[0]
+		voxel_id = voxel_handler.get_voxel_id(position)[0]  # First element is numeric ID.
 
 		collision: bool = self.voxel_data.voxel[self.voxel_data.voxel_string_id[voxel_id]].is_solid
 
 		return collision
-
-	def collision_depenetration(self, offset: vec3, is_axis_floored: bool, axis: int):
-
-		collision_position = (self.position + self.velocity) + offset
-
-		if self.collision(collision_position):
-			if axis == 0:
-				collision_axis_position: float = collision_position.x
-			elif axis == 1:
-				collision_axis_position: float = collision_position.y
-			else:
-				collision_axis_position: float = collision_position.z
-
-			voxel_position = int(collision_axis_position)
-
-			# Floored, so we need to increase by 1. todo explain
-			if is_axis_floored:
-				voxel_position += 1
-
-			velocity_change = collision_axis_position - voxel_position
-
-			if axis == 0:
-				self.velocity.x -= velocity_change
-			elif axis == 1:
-				self.velocity.y -= velocity_change
-			else:
-				self.velocity.z -= velocity_change
-
-
