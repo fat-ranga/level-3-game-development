@@ -210,13 +210,15 @@ class Player(Camera):
 
 			velocity_change: float = voxel_position - collision_axis_position
 
-			print(voxel_position)
-			print(collision_axis_position)
+			print(f"voxel pos: {voxel_position}")
+			print(f"collision pos delta v: {collision_position.x, collision_position.y, collision_position.z}")
+			print(f"original pos: {self.position + offset}")
 
 			return velocity_change
 		else:
-			print(int(collision_position.y))
-			print(collision_position.y)
+			print(f"voxel pos: {int(collision_position.y + 1)}")
+			print(f"collision pos delta v: {collision_position}")
+			print(f"original pos: {self.position + offset}")
 			return 0.0
 
 	def collision(self, position: vec3) -> bool:
