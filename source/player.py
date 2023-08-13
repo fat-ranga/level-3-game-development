@@ -29,15 +29,20 @@ class Player(Camera):
 		# Movement stuff.
 		self.movement_direction: vec3 = vec3()
 		self.velocity: vec3 = vec3()
+		self.gravity: vec3 = vec3(0, -9.81, 0)
 		self.sprint_multiplier: float = 2.0
+		self.dimensions = vec3(0.3, 1.9, 0.3)
 
 	def update(self):
 		self.keyboard_control()
 		self.mouse_control()
+
+		self.velocity += self.gravity * 0.008
+
 		self.handle_collision()
 
 		self.position += self.velocity
-		self.velocity = vec3(0, 0, 0) # todo: temporary
+		#self.velocity = vec3(0, 0, 0)  # todo: temporary
 
 		super().update()  # Call camera update methods.
 
@@ -100,7 +105,7 @@ class Player(Camera):
 			self.movement_direction -= vec3(glm.cos(self.yaw), 0, glm.sin(self.yaw))
 
 		if key_state[pg.K_d]:  # Right.
-			self.movement_direction += self.right # Todo: still according to local axis
+			self.movement_direction += self.right  # Todo: still according to local axis
 		if key_state[pg.K_a]:  # Left.
 			self.movement_direction -= self.right
 
@@ -117,118 +122,96 @@ class Player(Camera):
 		# Change velocity by our movement direction.
 		self.movement_direction *= PLAYER_SPEED * self.game.delta_time
 
-		self.velocity += self.movement_direction * 0.9
+		self.velocity += self.movement_direction * 0.2
 		self.velocity *= 0.75
 
+		if key_state[pg.K_SPACE]:
+			self.velocity.y = 0.2
 	def handle_collision(self):
 		overall_velocity_change = vec3(0, 0, 0)
 
-
 		# Up and down.
-		#velocity_change = self.collision_depenetration(vec3(0, 0.2, 0), "Y")
-		#self.velocity.y += velocity_change
-		velocity_change = self.collision_depenetration(vec3(0, -1.7, 0), "Y")
-		print(velocity_change)
-		self.velocity.y += velocity_change
+		#collision_position = (self.position + self.velocity) + vec3(0, -1.7, 0)
+		#if self.collision(collision_position):
+		#	ranga = glm.ivec3(collision_position)
+		#	velocity_change: glm.float64 = (ranga.y + 1) - collision_position.y
+		#	self.velocity.y += velocity_change
 
-		# Left (All of these directions are in world space).
+		if (self.velocity.z > 0 and self.check_front()) or (self.velocity.z < 0 and self.check_back()):
+			self.velocity.z = 0
+		if (self.velocity.x > 0 and self.check_right()) or (self.velocity.x < 0 and self.check_left()):
+			self.velocity.x = 0
 
-		#velocity_change = self.collision_depenetration(vec3(-0.3, 0.2, 0), "X")
-		#self.velocity.x += velocity_change
-		#velocity_change = self.collision_depenetration(vec3(-0.3, -0.95, 0), "X") # In-between top and bottom.
-		#self.velocity.x += velocity_change
-		#velocity_change = self.collision_depenetration(vec3(-0.3, -1, 0), "X")
-		#self.velocity.x += velocity_change
-#
-		## Right.
-#
-		#velocity_change = self.collision_depenetration(vec3(0.3, 0.2, 0), "X")
-		#self.velocity.x += velocity_change
-		#velocity_change = self.collision_depenetration(vec3(0.3, -0.95, 0), "X")
-		#self.velocity.x += velocity_change
-		#velocity_change = self.collision_depenetration(vec3(0.3, -1, 0), "X")
-		#self.velocity.x += velocity_change
-#
-		## Back.
-#
-		#velocity_change = self.collision_depenetration(vec3(0, 0.2, 0.3), "Z")
-		#self.velocity.z += velocity_change
-		#velocity_change = self.collision_depenetration(vec3(0, -0.95, 0.3), "Z")
-		#self.velocity.z += velocity_change
-		#velocity_change = self.collision_depenetration(vec3(0, -1, 0.3), "Z")
-		#self.velocity.z += velocity_change
-#
-		## Front.
-#
-		#velocity_change = self.collision_depenetration(vec3(0, 0.2, -0.3), "Z")
-		#self.velocity.z += velocity_change
-		#velocity_change = self.collision_depenetration(vec3(0, -0.95, -0.3), "Z")
-		#self.velocity.z += velocity_change
-		#velocity_change = self.collision_depenetration(vec3(0, -1, -0.3), "Z")
-		#self.velocity.z += velocity_change
+		if self.velocity.y < 0:
+			self.velocity.y = self.check_down_speed(self.velocity.y)
+		elif self.velocity.y > 0:
+			self.velocity.y = self.check_up_speed(self.velocity.y)
 
-		# Change the actual velocity.
-		#self.velocity += overall_velocity_change
-
-	def collision_depenetration(self, offset: vec3, axis: str) -> float:
-		# Changes the player's velocity on a certain axis based on how far
-		# their next position will penetrate into a solid voxel.
-
-		# Calculate velocity next frame for only a single axis,
-		# this is so that we can't phase through diagonal intersections
-		# that don't have a voxel on the other side.
-		# TODO: probably some way I could remove these checks and just pass in single axis instead
-		if axis == "X":
-			collision_position: vec3 = (self.position + self.velocity.x) + offset
-		elif axis == "Y":
-			collision_position: vec3 = (self.position + self.velocity.y) + offset
-		elif axis == "Z":
-			collision_position: vec3 = (self.position + self.velocity.z) + offset
-		else:
-			print("Collision De-penetration: Axis not specified.")
-			return 0.0
-
-		if self.collision(collision_position):
-			# Since voxel_position is floored, we need to increase it by 1 if our
-			# offset axis is negative, otherwise our velocity gets changed
-			# by an extra metre.
-			if axis == "X":
-				collision_axis_position: float = collision_position.x
-				voxel_position: int = int(collision_axis_position)
-				if offset.x < 0:
-					voxel_position += 1
-			elif axis == "Y":
-				collision_axis_position: float = collision_position.y
-				voxel_position: int = int(collision_axis_position)
-				if offset.y < 0:
-					voxel_position += 1
-			elif axis == "Z":
-				collision_axis_position: float = collision_position.z
-				voxel_position: int = int(collision_axis_position)
-				if offset.z < 0:
-					voxel_position += 1
-
-			velocity_change: float = voxel_position - collision_axis_position
-
-			print(f"voxel pos: {voxel_position}")
-			print(f"collision pos delta v: {collision_position.x, collision_position.y, collision_position.z}")
-			print(f"original pos: {self.position + offset}")
-
-			return velocity_change
-		else:
-			print(f"voxel pos: {int(collision_position.y + 1)}")
-			print(f"collision pos delta v: {collision_position}")
-			print(f"original pos: {self.position + offset}")
-			return 0.0
 
 	def collision(self, position: vec3) -> bool:
 		voxel_handler = self.game.scene.world.voxel_handler
 
-		position: glm.ivec3 = glm.ivec3(position)
+		voxel_position: glm.ivec3 = glm.ivec3(position)
 
-		# uint8
-		voxel_id = voxel_handler.get_voxel_id(position)[0]  # First element is numeric ID.
+		# todo uint8
+		voxel_id = voxel_handler.get_voxel_id(voxel_position)[0]  # First element is numeric ID.
 
 		collision: bool = self.voxel_data.voxel[self.voxel_data.voxel_string_id[voxel_id]].is_solid
 
 		return collision
+
+	def check_up_speed(self, velocity):
+		if self.collision(vec3(self.position.x - 0.3, self.position.y + 0.2 + velocity, self.position.z - 0.3)) and (not self.check_left() and not self.check_back()):
+			return 0.0
+		if self.collision(vec3(self.position.x + 0.3, self.position.y + 0.2 + velocity, self.position.z - 0.3)) and (not self.check_right() and not self.check_back()):
+			return 0.0
+		if self.collision(vec3(self.position.x - 0.3, self.position.y + 0.2 + velocity, self.position.z + 0.3)) and (not self.check_right() and not self.check_front()):
+			return 0.0
+		if self.collision(vec3(self.position.x + 0.3, self.position.y + 0.2 + velocity, self.position.z + 0.3)) and (not self.check_left() and not self.check_front()):
+			return 0.0
+
+		return velocity
+
+	def check_down_speed(self, velocity):
+		if self.collision(vec3(self.position.x - 0.3, self.position.y - 1.7 + velocity, self.position.z - 0.3)) and (not self.check_left() and not self.check_back()):
+			return 0.0
+		if self.collision(vec3(self.position.x + 0.3, self.position.y - 1.7 + velocity, self.position.z - 0.3)) and (not self.check_right() and not self.check_back()):
+			return 0.0
+		if self.collision(vec3(self.position.x - 0.3, self.position.y - 1.7 + velocity, self.position.z + 0.3)) and (not self.check_right() and not self.check_front()):
+			return 0.0
+		if self.collision(vec3(self.position.x + 0.3, self.position.y - 1.7 + velocity, self.position.z + 0.3)) and (not self.check_left() and not self.check_front()):
+			return 0.0
+
+		return velocity
+
+	def check_front(self) -> bool:
+		if self.collision(vec3(self.position.x, self.position.y - 1.7, self.position.z + 0.3)):
+			return True
+		if self.collision(vec3(self.position.x, self.position.y + 0.2, self.position.z + 0.3)):
+			return True
+
+		return False
+
+	def check_back(self) -> bool:
+		if self.collision(vec3(self.position.x, self.position.y - 1.7, self.position.z - 0.3)):
+			return True
+		if self.collision(vec3(self.position.x, self.position.y + 0.2, self.position.z - 0.3)):
+			return True
+
+		return False
+
+	def check_left(self) -> bool:
+		if self.collision(vec3(self.position.x - 0.3, self.position.y - 1.7, self.position.z)):
+			return True
+		if self.collision(vec3(self.position.x - 0.3, self.position.y + 0.2, self.position.z)):
+			return True
+
+		return False
+
+	def check_right(self) -> bool:
+		if self.collision(vec3(self.position.x + 0.3, self.position.y - 1.7, self.position.z)):
+			return True
+		if self.collision(vec3(self.position.x + 0.3, self.position.y + 0.2, self.position.z)):
+			return True
+
+		return False
