@@ -46,6 +46,7 @@ class Main:
 		self.clock = pg.time.Clock()
 		self.delta_time = 0  # Time between frames.
 		self.time = 0
+		self.paused = False
 
 		self.grab_mode: bool = True
 		self.mouse_visible: bool = False
@@ -65,6 +66,8 @@ class Main:
 		return SettingsProfile()
 
 	def on_init(self):
+		self.paused = False
+
 		self.textures = Textures(self)
 		self.voxel_data: VoxelDataDictionary = load_voxel_data(self,
 															   "data/voxel_types.json",
@@ -75,10 +78,14 @@ class Main:
 						   texture_ids=self.textures.atlas_packer.texture_ids,
 						   voxel_data=self.voxel_data)
 
+	def start_game(self):
+		pass
+
 	def update(self):
-		self.player.update()
-		self.shader_program.update()
-		self.scene.update()
+		if not self.paused:
+			self.player.update()
+			self.shader_program.update()
+			self.scene.update()
 
 		self.delta_time = self.clock.tick()
 		self.time = pg.time.get_ticks() * 0.001
@@ -106,15 +113,15 @@ class Main:
 				pg.display.toggle_fullscreen()
 
 			if event.type == pg.VIDEORESIZE:
-				# Update aspect ratio and stuff when the window is resized.
+				# Update projection matrix so that the view doesn't become squashed or stretched.
 				self.settings.window_resolution = vec2(event.size[0], event.size[1])
 				self.settings.aspect_ratio = self.settings.window_resolution.x / self.settings.window_resolution.y
 				self.settings.h_fov = 2 * math.atan(math.tan(self.settings.v_fov * 0.5) * self.settings.aspect_ratio)
 
+				# Correct aspect ratio of UI elements.
 				self.scene.crosshair.mesh.rebuild()
 				self.player.update_projection_matrix()
 				self.shader_program.update_projection_matrix()
-
 			self.player.handle_event(event=event)
 
 	def run(self):

@@ -37,7 +37,7 @@ class Player(Camera):
 		self.keyboard_control()
 		self.mouse_control()
 
-		self.velocity += self.gravity * 0.008
+		#self.velocity += self.gravity * 0.008
 
 		self.handle_collision()
 
