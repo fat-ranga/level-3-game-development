@@ -27,11 +27,13 @@ void main() {
 
     tex_col *= shading;
 
-    // underwater effect
-    if (frag_world_pos.y < water_line) tex_col *= vec3(0.0, 0.3, 1.0);
-
-    //fog
     float fog_dist = gl_FragCoord.z / gl_FragCoord.w;
+    float inverse_fog = 1 / fog_dist;
+    // Underwater absorption.
+    //if (frag_world_pos.y < water_line) tex_col *= vec3(0.0, 0.3, 1.0) * vec3(fog_dist, fog_dist, fog_dist);
+    if (frag_world_pos.y < water_line) tex_col *= vec3(0.1, 4.0, 8.0) * vec3(inverse_fog, inverse_fog, inverse_fog) * 12.0;
+
+    // Atmosphere / fog. More alpha means more blue background showing.
     tex_col = mix(tex_col, bg_color * vec3(0.5, 0.67, 1), (1.0 - exp2(-0.00001 * fog_dist * fog_dist)));
 
     tex_col = pow(tex_col, inv_gamma);
