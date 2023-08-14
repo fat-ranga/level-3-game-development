@@ -22,6 +22,7 @@ class QuadMesh(BaseMesh):
     def get_vertex_data(self):
         position = self.quad.position
         size = self.quad.size
+        z_depth = self.quad.z_depth
         aspect_ratio: float = self.game.settings.aspect_ratio
         aspect_ratio_correction: float = 2 / aspect_ratio
         #aspect_ratio_correction = 1
@@ -42,14 +43,14 @@ class QuadMesh(BaseMesh):
         #print("gangster fr")
         #print(aspect_ratio)
 
-        # Two triangles, z value is not needed, so it is left at 0.0.
+        # Two triangles, z value is not needed, so it is left at 0.0. # TODO does matter, quad clips into scene meshes
         vertices = [
-            ((position.x + size.x) * aspect_ratio_correction, position.y + size.y, 0.0),
-            ((position.x - size.x) * aspect_ratio_correction, position.y + size.y, 0.0),
-            ((position.x - size.x) * aspect_ratio_correction, position.y - size.y, 0.0),
-            ((position.x + size.x) * aspect_ratio_correction, position.y + size.y, 0.0),
-            ((position.x - size.x) * aspect_ratio_correction, position.y - size.y, 0.0),
-            ((position.x + size.x) * aspect_ratio_correction, position.y - size.y, 0.0)
+            ((position.x + size.x) * aspect_ratio_correction, position.y + size.y, z_depth),
+            ((position.x - size.x) * aspect_ratio_correction, position.y + size.y, z_depth),
+            ((position.x - size.x) * aspect_ratio_correction, position.y - size.y, z_depth),
+            ((position.x + size.x) * aspect_ratio_correction, position.y + size.y, z_depth),
+            ((position.x - size.x) * aspect_ratio_correction, position.y - size.y, z_depth),
+            ((position.x + size.x) * aspect_ratio_correction, position.y - size.y, z_depth)
         ]
         colors = [
             (0, 1, 0), (1, 0, 0), (1, 1, 0),

@@ -10,6 +10,7 @@ class Control:
 
 		self.visible: bool = True
 		self.keep_aspect: bool = True
+		self.z_depth: float = 0.0
 
 		# All relative to the Control's bounding box.
 		self.origin: vec2 = vec2(0.0, 1.0)  # In OpenGL it is bottom-left, this makes it top-left.
@@ -30,7 +31,10 @@ class Control:
 		if not self.visible:
 			return
 
-		self.position = vec2(WINDOW_RESOLUTION.x, WINDOW_RESOLUTION.y) * self.anchor
+		if not self.parent:
+			self.position = vec2(self.game.settings.window_resolution.x, self.game.settings.window_resolution.y) * self.anchor
+		else:
+			self.position = self.parent.position * self.anchor
 
 		self.render()
 
@@ -38,12 +42,10 @@ class Control:
 		pass
 
 
-class Button:
+class Button(Control):
 	def __init__(self, game):
-		#super().__init__()
+		super().__init__(game)
 		#self.texture = None
-		self.position = vec2(-0.5, 0.0)
-		self.size = vec2(0.5, 0.5)
 		self.game = game
 		self.mesh = QuadMesh(self)
 

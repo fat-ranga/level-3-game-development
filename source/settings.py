@@ -12,7 +12,7 @@ Z_DEPTH_SIZE = 24
 # If there's a random bug that we can't solve, try setting the cache to False.
 # When the game is exported, we always want this to be set to True, so end-users
 # don't have to wait as long.
-LLVM_CACHE_MODE: bool = True
+LLVM_CACHE_MODE: bool = False
 
 # Antialiasing. Can cause line artifacts in-between triangles
 # that have edges that share the same position.
@@ -32,7 +32,7 @@ CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE
 CHUNK_SPHERE_RADIUS = H_CHUNK_SIZE * math.sqrt(3)
 
 # World.
-WORLD_W, WORLD_H = 2, 2
+WORLD_W, WORLD_H = 16, 4
 WORLD_D = WORLD_W
 WORLD_AREA = WORLD_W * WORLD_D
 WORLD_VOL = WORLD_AREA * WORLD_H

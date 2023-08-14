@@ -101,6 +101,9 @@ class Main:
 			if event.type == pg.QUIT:
 				self.is_running = False
 
+			if event.type == pg.K_g:
+				self.start_game()
+
 			if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
 				self.grab_mode = not self.grab_mode
 				self.mouse_visible = not self.mouse_visible
@@ -118,10 +121,12 @@ class Main:
 				self.settings.aspect_ratio = self.settings.window_resolution.x / self.settings.window_resolution.y
 				self.settings.h_fov = 2 * math.atan(math.tan(self.settings.v_fov * 0.5) * self.settings.aspect_ratio)
 
-				# Correct aspect ratio of UI elements.
-				self.scene.crosshair.mesh.rebuild()
 				self.player.update_projection_matrix()
 				self.shader_program.update_projection_matrix()
+
+				# Correct aspect ratio of UI elements.
+				self.scene.rebuild_ui()
+
 			self.player.handle_event(event=event)
 
 	def run(self):

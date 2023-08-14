@@ -13,10 +13,26 @@ class Scene:
 		self.voxel_marker = VoxelMarker(self.world.voxel_handler)
 		self.water = Water(game)
 		self.clouds = Clouds(game)
-		self.cool_quad = Button(game)
+
+		self.ui_elements = []
+
 		self.crosshair = TextureRect(game)
 		self.crosshair.size = vec2(0.02, 0.04) # TODO: fix scaling
+		self.crosshair.z_depth = 0
 		self.crosshair.mesh.rebuild()
+		self.ui_elements.append(self.crosshair)
+
+		self.title = TextureRect(game)
+		self.title.z_depth = 1
+		self.title.mesh.rebuild()
+		self.ui_elements.append(self.title)
+
+		self.test_button = TextureRect(game)
+		self.test_button.size = vec2(0.04, 0.08)
+		self.test_button.z_depth = -0.01
+		self.test_button.mesh.rebuild()
+		self.ui_elements.append(self.test_button)
+		#self.test_button.parent = self.title
 	
 	def update(self):
 		self.world.update()
@@ -31,11 +47,27 @@ class Scene:
 		self.game.ctx.disable(mgl.CULL_FACE)
 		self.clouds.render()
 		self.water.render()
+
 		self.game.ctx.enable(mgl.CULL_FACE)
 		
 		# Render player's voxel selection marker.
 		self.voxel_marker.render()
 
+		self.game.ctx.disable(mgl.DEPTH_TEST)
 		# Render UI.
-		#self.cool_quad.render()
+		self.game.shader_program.ui_quad["u_texture_0"] = 1
+		self.test_button.render()
+		self.game.ctx.enable(mgl.DEPTH_TEST)
+
+		self.game.shader_program.ui_quad["u_texture_0"] = 4
 		self.crosshair.render()
+
+		self.game.shader_program.ui_quad["u_texture_0"] = 3
+		# self.title.render()
+
+
+
+	def rebuild_ui(self):
+		# Called when the aspect ratio / window size is changed, resizes UI accordingly.
+		for i in range(len(self.ui_elements)):
+			self.ui_elements[i].mesh.rebuild()

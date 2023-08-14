@@ -32,16 +32,17 @@ class Player(Camera):
 		self.gravity: vec3 = vec3(0, -9.81, 0)
 		self.sprint_multiplier: float = 2.0
 		self.dimensions = vec3(0.3, 1.9, 0.3)
+		self.is_grounded: bool = False
 
 	def update(self):
+		self.apply_gravity() # Gravity first so that we can jump.
 		self.keyboard_control()
 		self.mouse_control()
-
-		#self.velocity += self.gravity * 0.008
 
 		self.handle_collision()
 
 		self.position += self.velocity
+
 		#self.velocity = vec3(0, 0, 0)  # todo: temporary
 
 		super().update()  # Call camera update methods.
@@ -113,8 +114,9 @@ class Player(Camera):
 		if key_state[pg.K_LSHIFT]:
 			self.movement_direction *= self.sprint_multiplier
 
-		if key_state[pg.K_SPACE]:  # Up.
-			self.movement_direction += vec3(0, 1, 0)
+		if key_state[pg.K_SPACE] and self.is_grounded:  # Up.
+			self.movement_direction.y = 6.0
+			#self.movement_direction += vec3(0, 1, 0) # todo flying creative mode state machine thing
 
 		if key_state[pg.K_LCTRL]:  # Down.
 			self.movement_direction -= vec3(0, 1, 0)
@@ -123,10 +125,17 @@ class Player(Camera):
 		self.movement_direction *= PLAYER_SPEED * self.game.delta_time
 
 		self.velocity += self.movement_direction * 0.2
-		self.velocity *= 0.75
+		self.velocity.x *= 0.75
+		self.velocity.z *= 0.75
 
-		if key_state[pg.K_SPACE]:
-			self.velocity.y = 0.2
+	def apply_gravity(self):
+		# Set downwards velocity to some small value.
+		if self.is_grounded:
+			self.velocity.y = -0.05
+		# We are in the air and there is no support force, so our weight force is applied!
+		else:
+			self.velocity += self.gravity * 0.0008
+
 	def handle_collision(self):
 		overall_velocity_change = vec3(0, 0, 0)
 
@@ -145,6 +154,7 @@ class Player(Camera):
 		if self.velocity.y < 0:
 			self.velocity.y = self.check_down_speed(self.velocity.y)
 		elif self.velocity.y > 0:
+			self.is_grounded: bool = False
 			self.velocity.y = self.check_up_speed(self.velocity.y)
 
 
@@ -174,14 +184,19 @@ class Player(Camera):
 
 	def check_down_speed(self, velocity):
 		if self.collision(vec3(self.position.x - 0.3, self.position.y - 1.7 + velocity, self.position.z - 0.3)) and (not self.check_left() and not self.check_back()):
+			self.is_grounded = True
 			return 0.0
 		if self.collision(vec3(self.position.x + 0.3, self.position.y - 1.7 + velocity, self.position.z - 0.3)) and (not self.check_right() and not self.check_back()):
+			self.is_grounded = True
 			return 0.0
 		if self.collision(vec3(self.position.x - 0.3, self.position.y - 1.7 + velocity, self.position.z + 0.3)) and (not self.check_right() and not self.check_front()):
+			self.is_grounded = True
 			return 0.0
 		if self.collision(vec3(self.position.x + 0.3, self.position.y - 1.7 + velocity, self.position.z + 0.3)) and (not self.check_left() and not self.check_front()):
+			self.is_grounded = True
 			return 0.0
 
+		self.is_grounded = False
 		return velocity
 
 	def check_front(self) -> bool:
