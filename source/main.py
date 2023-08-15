@@ -8,15 +8,17 @@ import sys
 from source.shader_program import ShaderProgram
 from source.scene import Scene
 from source.player import Player
+from source.camera import Camera
 from source.textures import Textures
 from source.user_interface import *
 from source.data_definitions import *
+from source.main_menu import MainMenu
 
 
 class Main:
 	def __init__(self):
 		pg.init()
-		pg.display.set_caption("Kiwicraft")
+		pg.display.set_caption("Compiling...")
 
 		icon = pg.image.load("data/icon.png")
 		pg.display.set_icon(icon)
@@ -47,14 +49,15 @@ class Main:
 		self.delta_time = 0  # Time between frames.
 		self.time = 0
 		self.paused = False
+		self.is_game_started = False
 
 		self.grab_mode: bool = True
-		self.mouse_visible: bool = False
+		self.mouse_visible: bool = True
 
 		# Makes the current window active, I believe!
 		pg.event.set_grab(self.grab_mode)
 
-		# Hides the mouse.
+		# Shows the mouse.
 		pg.mouse.set_visible(self.mouse_visible)
 
 		self.is_running = True
@@ -66,20 +69,38 @@ class Main:
 		return SettingsProfile()
 
 	def on_init(self):
-		self.paused = False
+		#pg.display.set_caption("Kiwicraft")
+		self.paused = True
 
 		self.textures = Textures(self)
 		self.voxel_data: VoxelDataDictionary = load_voxel_data(self,
 															   "data/voxel_types.json",
 															   self.textures.atlas_packer.texture_ids)
+		# todo temp
+		self.menu_camera = Camera(glm.vec3(0,0,0),
+							 0,
+							 0,
+							 self.settings.v_fov,
+							 self.settings.h_fov,
+							 self.settings.aspect_ratio)
+		self.shader_program = ShaderProgram(self, self.menu_camera)
+
+		self.main_menu = MainMenu(self)
+
+	def start_game(self):
+		self.paused = False
+		self.is_game_started = True
+
+		# Hides the mouse.
+		self.mouse_visible = False
+		pg.mouse.set_visible(self.mouse_visible)
+
 		self.player = Player(self, self.voxel_data)
-		self.shader_program = ShaderProgram(self)
+		self.shader_program.current_camera = self.player
+		self.shader_program.update_projection_matrix()
 		self.scene = Scene(self,
 						   texture_ids=self.textures.atlas_packer.texture_ids,
 						   voxel_data=self.voxel_data)
-
-	def start_game(self):
-		pass
 
 	def update(self):
 		if not self.paused:
@@ -89,11 +110,15 @@ class Main:
 
 		self.delta_time = self.clock.tick()
 		self.time = pg.time.get_ticks() * 0.001
+
 		pg.display.set_caption(f"{self.clock.get_fps() :.0f}")
 
 	def render(self):
 		self.ctx.clear(color=BG_COLOUR)  # Clear frame and depth buffers.
-		self.scene.render()
+		if self.is_game_started:
+			self.scene.render()
+		else:
+			self.main_menu.render()
 		pg.display.flip()  # Display a new frame.
 
 	def handle_events(self):
@@ -101,7 +126,7 @@ class Main:
 			if event.type == pg.QUIT:
 				self.is_running = False
 
-			if event.type == pg.K_g:
+			if event.type == pg.KEYDOWN and event.key == pg.K_g:
 				self.start_game()
 
 			if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
@@ -112,22 +137,25 @@ class Main:
 				pg.mouse.set_visible(self.mouse_visible)
 
 			if event.type == pg.KEYDOWN and event.key == pg.K_F11:
-				# pg.display.set_mode((1920, 1080), pg.FULLSCREEN)
 				pg.display.toggle_fullscreen()
 
 			if event.type == pg.VIDEORESIZE:
-				# Update projection matrix so that the view doesn't become squashed or stretched.
+				# Recalculate aspect ratio and stuff.
 				self.settings.window_resolution = vec2(event.size[0], event.size[1])
 				self.settings.aspect_ratio = self.settings.window_resolution.x / self.settings.window_resolution.y
 				self.settings.h_fov = 2 * math.atan(math.tan(self.settings.v_fov * 0.5) * self.settings.aspect_ratio)
 
-				self.player.update_projection_matrix()
-				self.shader_program.update_projection_matrix()
+				if self.is_game_started:
+					# Update projection matrix so that the view doesn't become squashed or stretched.
+					self.player.update_projection_matrix()
+					self.shader_program.update_projection_matrix()
 
-				# Correct aspect ratio of UI elements.
-				self.scene.rebuild_ui()
-
-			self.player.handle_event(event=event)
+					# Correct aspect ratio of UI elements.
+					self.scene.rebuild_ui()
+				else:
+					self.main_menu.rebuild_ui()
+			if self.is_game_started:
+				self.player.handle_event(event=event)
 
 	def run(self):
 		while self.is_running:

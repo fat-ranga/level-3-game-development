@@ -9,10 +9,11 @@ class Textures:
 		self.atlas_packer = TextureAtlasPacker()
 		
 		# Load textures.
-		self.texture_0 = self.load("ui/voxel_outline.png")
-		self.texture_1 = self.load("water.png")
-		self.texture_2 = self.load("ui/kiwicraft.png")
-		self.texture_3 = self.load("ui/crosshair.png", filter=mgl.LINEAR)
+		self.voxel_outline = self.load("ui/voxel_outline.png")
+		self.water = self.load("water.png")
+		self.kiwicraft = self.load("ui/kiwicraft.png")
+		self.crosshair = self.load("ui/crosshair.png", filter=mgl.LINEAR)
+		self.main_menu_background = self.load("ui/background.png")
 		
 		# Make the atlas texture.
 		self.texture_paths: list = self.atlas_packer.get_texture_paths_in_directory()
@@ -20,11 +21,12 @@ class Textures:
 		self.atlas_texture: pg.surface = self.load_texture(self.atlas_packer.pack_atlas(self.texture_list))
 		
 		# Assign texture unit.
-		self.texture_0.use(location=0)
+		self.voxel_outline.use(location=0)
 		self.atlas_texture.use(location=1)
-		self.texture_1.use(location=2)
-		self.texture_2.use(location=3)
-		self.texture_3.use(location=4)
+		self.water.use(location=2)
+		self.kiwicraft.use(location=3)
+		self.crosshair.use(location=4)
+		self.main_menu_background.use(location=5)
 	
 	def load_texture(self, texture):
 		# Texture is the wrong way round for some reason, so we have to flip it.

@@ -17,21 +17,16 @@ class Scene:
 		self.ui_elements = []
 
 		self.crosshair = TextureRect(game)
-		self.crosshair.size = vec2(0.04, 0.04) # TODO: fix scaling
-		self.crosshair.z_depth = 0
-		self.crosshair.mesh.rebuild()
+		self.crosshair.size = vec2(0.04, 0.04)
 		self.ui_elements.append(self.crosshair)
 
-		self.title = TextureRect(game)
-		self.title.z_depth = 1
-		self.title.mesh.rebuild()
-		self.ui_elements.append(self.title)
+		#self.title = TextureRect(game)
+		#self.ui_elements.append(self.title)
+		#self.test_button = TextureRect(game)
+		#self.test_button.size = vec2(0.08, 0.08)
+		#self.ui_elements.append(self.test_button)
 
-		self.test_button = TextureRect(game)
-		self.test_button.size = vec2(0.04, 0.08)
-		self.test_button.z_depth = -0.01
-		self.test_button.mesh.rebuild()
-		self.ui_elements.append(self.test_button)
+		self.rebuild_ui() # todo temporary
 		#self.test_button.parent = self.title
 	
 	def update(self):
@@ -55,13 +50,13 @@ class Scene:
 
 		self.game.ctx.disable(mgl.DEPTH_TEST)
 		# Render UI.
-		self.game.shader_program.ui_quad["u_texture_0"] = 1
-		self.test_button.render()
+		#self.game.shader_program.ui_quad["u_texture_0"] = 1
+		#self.test_button.render()
 
 		self.game.shader_program.ui_quad["u_texture_0"] = 4
 		self.crosshair.render()
 
-		self.game.shader_program.ui_quad["u_texture_0"] = 3
+		#self.game.shader_program.ui_quad["u_texture_0"] = 3
 		# self.title.render()
 
 		self.game.ctx.enable(mgl.DEPTH_TEST)

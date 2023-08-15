@@ -10,7 +10,6 @@ class Control:
 
 		self.visible: bool = True
 		self.keep_aspect: bool = True
-		self.z_depth: float = 0.0
 
 		# All relative to the Control's bounding box.
 		self.origin: vec2 = vec2(0.0, 1.0)  # In OpenGL it is bottom-left, this makes it top-left.
@@ -21,6 +20,7 @@ class Control:
 		# Position value is determined from the other values, and is not used directly.
 		self.position: vec2 = vec2(0.0, 0.0)  # Local position, relative to parent.
 		self.parent: Control = None
+
 
 	def resize(self):
 		pass
