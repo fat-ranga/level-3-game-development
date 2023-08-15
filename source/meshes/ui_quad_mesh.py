@@ -24,7 +24,7 @@ class QuadMesh(BaseMesh):
         size = self.quad.size
         z_depth = self.quad.z_depth
         aspect_ratio: float = self.game.settings.aspect_ratio
-        aspect_ratio_correction: float = 2 / aspect_ratio
+        aspect_ratio_correction: float = 1 / aspect_ratio
         #aspect_ratio_correction = 1
 
         # ratio 0.25 correction = 8

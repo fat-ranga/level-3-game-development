@@ -53,7 +53,7 @@ PLAYER_ROT_SPEED = 0.003
 PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
 
 # Background world colour.
-BG_COLOUR = glm.vec3(0.58, 0.83, 0.99)
+BG_COLOUR = glm.vec3(0.48, 0.73, 0.99)
 
 # Texture atlas packer.
 ATLAS_TEXTURE_ELEMENT_SIZE = 16

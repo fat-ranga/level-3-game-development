@@ -31,10 +31,11 @@ void main() {
     float inverse_fog = 1 / fog_dist;
     // Underwater absorption.
     //if (frag_world_pos.y < water_line) tex_col *= vec3(0.0, 0.3, 1.0) * vec3(fog_dist, fog_dist, fog_dist);
-    if (frag_world_pos.y < water_line) tex_col *= vec3(0.1, 4.0, 8.0) * vec3(inverse_fog, inverse_fog, inverse_fog) * 12.0;
-
+    if (frag_world_pos.y < water_line) {tex_col *= vec3(0.01, 0.2, 0.4) * vec3(inverse_fog, inverse_fog, inverse_fog) * 12.0;}
+    // todo make this based on whether the player is under the water
+    else{
     // Atmosphere / fog. More alpha means more blue background showing.
-    tex_col = mix(tex_col, bg_color * vec3(0.5, 0.67, 1), (1.0 - exp2(-0.00001 * fog_dist * fog_dist)));
+    tex_col = mix(tex_col, bg_color * vec3(0.5, 0.67, 1), (1.0 - exp2(-0.00001 * fog_dist * fog_dist)));}
 
     tex_col = pow(tex_col, inv_gamma);
     fragColor = vec4(tex_col, 1.0);

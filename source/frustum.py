@@ -4,6 +4,7 @@ class Frustum:
 	def __init__(self, camera):
 		self.cam: Camera = camera
 
+		print(self.cam.h_fov)
 		self.factor_y: float = 1.0 / math.cos(half_y := self.cam.v_fov * 0.5)
 		self.tan_y: float = math.tan(half_y)
 
@@ -11,6 +12,7 @@ class Frustum:
 		self.tan_x: float = math.tan(half_x)
 
 	def update_factors(self):
+		print(self.cam.h_fov)
 		self.factor_y = 1.0 / math.cos(half_y := self.cam.v_fov * 0.5)
 		self.tan_y = math.tan(half_y)
 

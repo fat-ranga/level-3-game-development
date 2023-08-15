@@ -53,6 +53,11 @@ class Player(Camera):
 									  self.game.settings.aspect_ratio,
 									  NEAR,
 									  FAR)
+
+		# Update camera parameters so that chunks are only hidden outside of player frustum.
+		self.h_fov = self.game.settings.h_fov
+		self.v_fov = self.game.settings.v_fov
+		self.aspect_ratio = self.game.settings.aspect_ratio
 		self.frustum.update_factors()
 
 	def handle_event(self, event):

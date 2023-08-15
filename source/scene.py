@@ -17,7 +17,7 @@ class Scene:
 		self.ui_elements = []
 
 		self.crosshair = TextureRect(game)
-		self.crosshair.size = vec2(0.02, 0.04) # TODO: fix scaling
+		self.crosshair.size = vec2(0.04, 0.04) # TODO: fix scaling
 		self.crosshair.z_depth = 0
 		self.crosshair.mesh.rebuild()
 		self.ui_elements.append(self.crosshair)
@@ -57,13 +57,14 @@ class Scene:
 		# Render UI.
 		self.game.shader_program.ui_quad["u_texture_0"] = 1
 		self.test_button.render()
-		self.game.ctx.enable(mgl.DEPTH_TEST)
 
 		self.game.shader_program.ui_quad["u_texture_0"] = 4
 		self.crosshair.render()
 
 		self.game.shader_program.ui_quad["u_texture_0"] = 3
 		# self.title.render()
+
+		self.game.ctx.enable(mgl.DEPTH_TEST)
 
 
 
