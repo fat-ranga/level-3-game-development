@@ -18,16 +18,10 @@ class Scene:
 
 		self.crosshair = TextureRect(game)
 		self.crosshair.size = vec2(0.04, 0.04)
+		self.crosshair.texture_id = 4
 		self.ui_elements.append(self.crosshair)
 
-		#self.title = TextureRect(game)
-		#self.ui_elements.append(self.title)
-		#self.test_button = TextureRect(game)
-		#self.test_button.size = vec2(0.08, 0.08)
-		#self.ui_elements.append(self.test_button)
-
 		self.rebuild_ui() # todo temporary
-		#self.test_button.parent = self.title
 	
 	def update(self):
 		self.world.update()
@@ -52,9 +46,11 @@ class Scene:
 		# Render UI.
 		#self.game.shader_program.ui_quad["u_texture_0"] = 1
 		#self.test_button.render()
+		for i in range(len(self.ui_elements)):
+			self.ui_elements[i].render()
 
-		self.game.shader_program.ui_quad["u_texture_0"] = 4
-		self.crosshair.render()
+		#self.game.shader_program.ui_quad["u_texture_0"] = 4
+		#self.crosshair.render()
 
 		#self.game.shader_program.ui_quad["u_texture_0"] = 3
 		# self.title.render()

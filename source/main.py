@@ -107,6 +107,8 @@ class Main:
 			self.player.update()
 			self.shader_program.update()
 			self.scene.update()
+		else:
+			self.main_menu.update()
 
 		self.delta_time = self.clock.tick()
 		self.time = pg.time.get_ticks() * 0.001
@@ -156,6 +158,8 @@ class Main:
 					self.main_menu.rebuild_ui()
 			if self.is_game_started:
 				self.player.handle_event(event=event)
+			else:
+				self.main_menu.handle_event(event=event)
 
 	def run(self):
 		while self.is_running:

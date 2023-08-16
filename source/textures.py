@@ -14,6 +14,7 @@ class Textures:
 		self.kiwicraft = self.load("ui/kiwicraft.png")
 		self.crosshair = self.load("ui/crosshair.png", filter=mgl.LINEAR)
 		self.main_menu_background = self.load("ui/background.png")
+		self.tile = self.load("ui/tile.png")
 		
 		# Make the atlas texture.
 		self.texture_paths: list = self.atlas_packer.get_texture_paths_in_directory()
@@ -27,6 +28,7 @@ class Textures:
 		self.kiwicraft.use(location=3)
 		self.crosshair.use(location=4)
 		self.main_menu_background.use(location=5)
+		self.tile.use(location=6)
 	
 	def load_texture(self, texture):
 		# Texture is the wrong way round for some reason, so we have to flip it.
