@@ -17,6 +17,7 @@ void main() {
 
     // Fog.
     float fog_dist = gl_FragCoord.z / gl_FragCoord.w;
+    // TODO fix fog au
     float alpha = mix(0.5, 0.0, 1.0 - exp(-0.000002 * fog_dist * fog_dist));
     //float alpha = mix(0.9, 0.0, 1.0 - exp(-0.000002 * fog_dist * fog_dist));
 

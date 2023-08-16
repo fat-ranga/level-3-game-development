@@ -17,7 +17,8 @@ class Scene:
 		self.ui_elements = []
 
 		self.crosshair = TextureRect(game)
-		self.crosshair.size = vec2(0.04, 0.04)
+		self.crosshair.size_in_pixels = ivec2(128, 128)
+		self.crosshair.scale = vec2(0.25, 0.25)
 		self.crosshair.texture_id = 4
 		self.ui_elements.append(self.crosshair)
 
@@ -62,4 +63,4 @@ class Scene:
 	def rebuild_ui(self):
 		# Called when the aspect ratio / window size is changed, resizes UI accordingly.
 		for i in range(len(self.ui_elements)):
-			self.ui_elements[i].mesh.rebuild()
+			self.ui_elements[i].resize()
