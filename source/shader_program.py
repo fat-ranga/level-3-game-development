@@ -12,6 +12,7 @@ class ShaderProgram:
 		self.water = self.get_program("water")
 		self.clouds = self.get_program("clouds")
 		self.ui_quad = self.get_program("ui_quad")
+		self.skybox = self.get_program("skybox")
 		# ------------------------- #
 		self.set_uniforms_on_init()
 
@@ -25,6 +26,8 @@ class ShaderProgram:
 		self.water["m_proj"].write(self.current_camera.m_proj)
 		# clouds
 		self.clouds["m_proj"].write(self.current_camera.m_proj)
+		# Skybox.
+		self.skybox["m_proj"].write(self.current_camera.m_proj)
 
 	def set_uniforms_on_init(self):
 		# chunk
@@ -51,6 +54,12 @@ class ShaderProgram:
 		self.clouds["bg_color"].write(BG_COLOUR)
 		self.clouds["cloud_scale"] = CLOUD_SCALE
 
+		# Skybox.
+		self.skybox["m_proj"].write(self.current_camera.m_proj)
+		self.skybox['m_view'].write(glm.mat4(glm.mat3(self.current_camera.m_view)))
+		#self.skybox["frag_world_pos"].write(glm.vec3(0, 1, 0))
+		self.skybox["u_texture_skybox"] = 7
+
 		# quad
 		# TODO: need to be able to change uniforms between draw calls
 		# Otherwise the texture is the same for every object that uses the same shader.
@@ -63,6 +72,7 @@ class ShaderProgram:
 		self.voxel_marker["m_view"].write(self.current_camera.m_view)
 		self.water["m_view"].write(self.current_camera.m_view)
 		self.clouds["m_view"].write(self.current_camera.m_view)
+		self.skybox["m_view"].write(glm.mat4(glm.mat3(self.current_camera.m_view)))
 
 	# For loading shaders.
 	def get_program(self, shader_name):

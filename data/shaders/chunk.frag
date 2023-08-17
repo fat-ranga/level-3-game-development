@@ -32,7 +32,6 @@ void main() {
     // Underwater absorption.
     //if (frag_world_pos.y < water_line) tex_col *= vec3(0.0, 0.3, 1.0) * vec3(fog_dist, fog_dist, fog_dist);
     if (frag_world_pos.y < water_line) {
-        tex_col = tex_col;
         tex_col = mix(tex_col, water_colour, 1.0 - exp(-0.2 * fog_dist));
     }
         //tex_col *= vec3(0.01, 0.2, 0.4) * vec3(inverse_fog, inverse_fog, inverse_fog);}

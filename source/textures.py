@@ -15,6 +15,7 @@ class Textures:
 		self.crosshair = self.load("ui/crosshair.png", filter=mgl.LINEAR)
 		self.main_menu_background = self.load("ui/background.png")
 		self.tile = self.load("ui/tile.png")
+		self.skybox = self.load_texture_cube("skybox/", extension="png")
 		
 		# Make the atlas texture.
 		self.texture_paths: list = self.atlas_packer.get_texture_paths_in_directory()
@@ -29,6 +30,7 @@ class Textures:
 		self.crosshair.use(location=4)
 		self.main_menu_background.use(location=5)
 		self.tile.use(location=6)
+		self.skybox.use(location=7)
 	
 	def load_texture(self, texture):
 		# Texture is the wrong way round for some reason, so we have to flip it.
@@ -56,3 +58,28 @@ class Textures:
 		texture.build_mipmaps()
 		texture.filter = (filter, filter)
 		return texture
+
+	def load_texture_cube(self, dir_path: str, extension="png"):
+		# Flip back and front textures, otherwise the cube gets mapped incorrectly.
+		faces = ['right', 'left', 'top', 'bottom'] + ['front', 'back'][::-1]
+		textures = []
+		for face in faces:
+			#texture = pg.image.load(dir_path + f'{face}.{extension}').convert()
+			texture = pg.image.load(f"data/textures/{dir_path}{face}.{extension}").convert()
+
+			# The faces are correct from an outside view, but not inside.
+			# So, we need to flip them.
+			if face in ['right', 'left', 'front', 'back']:
+				texture = pg.transform.flip(texture, flip_x=True, flip_y=False)
+			else:
+				texture = pg.transform.flip(texture, flip_x=False, flip_y=True)
+			textures.append(texture)
+
+		size = textures[0].get_size()
+		texture_cube = self.ctx.texture_cube(size=size, components=3, data=None)
+
+		for i in range(6):
+			texture_data = pg.image.tostring(textures[i], 'RGB')
+			texture_cube.write(face=i, data=texture_data)
+
+		return texture_cube

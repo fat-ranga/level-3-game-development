@@ -3,6 +3,8 @@ from source.world import World
 from source.world_objects.voxel_marker import VoxelMarker
 from source.world_objects.water import Water
 from source.world_objects.clouds import Clouds
+from source.world_objects.skybox import Skybox
+
 from source.user_interface import *
 
 
@@ -13,6 +15,7 @@ class Scene:
 		self.voxel_marker = VoxelMarker(self.world.voxel_handler)
 		self.water = Water(game)
 		self.clouds = Clouds(game)
+		self.skybox = Skybox(game)
 
 		self.ui_elements = []
 
@@ -30,6 +33,7 @@ class Scene:
 		self.clouds.update()
 	
 	def render(self):
+		self.skybox.render()
 		# Render chunks and stuff.
 		self.world.render()
 		
@@ -43,6 +47,11 @@ class Scene:
 		# Render player's voxel selection marker.
 		self.voxel_marker.render()
 
+		# Render skybox after everything else. This is more efficient
+		# because everything else has been depth-tested first, and this means
+		# fewer pixels to fill. TODO: what effect would this have on antialiasing?
+
+
 		self.game.ctx.disable(mgl.DEPTH_TEST)
 		# Render UI.
 		#self.game.shader_program.ui_quad["u_texture_0"] = 1
@@ -55,7 +64,6 @@ class Scene:
 
 		#self.game.shader_program.ui_quad["u_texture_0"] = 3
 		# self.title.render()
-
 		self.game.ctx.enable(mgl.DEPTH_TEST)
 
 
