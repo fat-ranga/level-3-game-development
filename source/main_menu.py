@@ -25,12 +25,19 @@ class MainMenu:
 		self.title.size_in_pixels = ivec2(310, 64)
 		self.ui_elements.append(self.title)
 
-		self.test_button = TextureRect(game)
-		# self.test_button.size = vec2(0.16, 0.16)
-		self.test_button.texture_id = 6
-		self.test_button.name = "Test Button"
-		self.test_button.size_in_pixels = ivec2(18, 18)
-		self.ui_elements.append(self.test_button)
+		self.singleplayer_button = Button(game)
+		self.singleplayer_button.texture_id = 8
+		self.singleplayer_button.is_selected_texture_id = 9
+		self.singleplayer_button.name = "SingleplayerButton"
+		self.singleplayer_button.size_in_pixels = ivec2(87, 27)
+		self.ui_elements.append(self.singleplayer_button)
+
+		self.exit_button = Button(game)
+		self.exit_button.texture_id = 10
+		self.exit_button.is_selected_texture_id = 11
+		self.exit_button.name = "ExitButton"
+		self.exit_button.size_in_pixels = ivec2(87, 27)
+		self.ui_elements.append(self.exit_button)
 
 		self.rebuild_ui()  # todo temporary
 
@@ -85,5 +92,9 @@ class MainMenu:
 					# whatever's drawn on top gets the mouse input, and not whatever's
 					# underneath.
 					if self.ui_elements[-i - 1].is_mouse_position_in_bounds:
-						print(self.ui_elements[-i - 1].name)
-						return
+						# Determine what happens depending on the name of the UI element we just clicked.
+						if self.ui_elements[-i - 1].name == "SingleplayerButton":
+							self.game.start_game()
+						if self.ui_elements[-i - 1].name == "ExitButton":
+							self.game.is_running = False
+							return

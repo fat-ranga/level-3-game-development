@@ -11,7 +11,6 @@ class Control:
 		self.visible: bool = True
 		self.keep_aspect: bool = True
 		self.name = "default"
-		self.is_selected = False
 		self.is_mouse_position_in_bounds = False
 
 		# All relative to the Control's bounding box.
@@ -87,9 +86,21 @@ class Button(TextureRect):
 	def __init__(self, game):
 		super().__init__(game)
 		self.game = game
+		self.is_selected: bool = False
+		self.is_selected_texture_id: int = self.texture_id
 
 	def render(self):
-		super().render()
+		if self.is_mouse_position_in_bounds:
+			self.is_selected = True
+		else:
+			self.is_selected = False
+
+		if self.is_selected:
+			self.game.shader_program.ui_quad["u_texture_0"] = self.is_selected_texture_id
+		else:
+			self.game.shader_program.ui_quad["u_texture_0"] = self.texture_id
+
+		self.mesh.render()
 
 
 

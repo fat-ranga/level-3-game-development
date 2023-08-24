@@ -6,6 +6,7 @@ class Textures:
 	def __init__(self, game):
 		self.game = game
 		self.ctx = game.ctx
+
 		self.atlas_packer = TextureAtlasPacker()
 		
 		# Load textures.
@@ -16,6 +17,10 @@ class Textures:
 		self.main_menu_background = self.load("ui/background.png")
 		self.tile = self.load("ui/tile.png")
 		self.skybox = self.load_texture_cube("skybox/", extension="png")
+		self.singleplayer = self.load("ui/singleplayer.png")
+		self.singleplayer_selected = self.load("ui/singleplayer_selected.png")
+		self.exit = self.load("ui/exit.png")
+		self.exit_selected = self.load("ui/exit_selected.png")
 		
 		# Make the atlas texture.
 		self.texture_paths: list = self.atlas_packer.get_texture_paths_in_directory()
@@ -31,6 +36,10 @@ class Textures:
 		self.main_menu_background.use(location=5)
 		self.tile.use(location=6)
 		self.skybox.use(location=7)
+		self.singleplayer.use(location=8)
+		self.singleplayer_selected.use(location=9)
+		self.exit.use(location=10)
+		self.exit_selected.use(location=11)
 	
 	def load_texture(self, texture):
 		# Texture is the wrong way round for some reason, so we have to flip it.

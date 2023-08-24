@@ -128,9 +128,6 @@ class Main:
 			if event.type == pg.QUIT:
 				self.is_running = False
 
-			if event.type == pg.KEYDOWN and event.key == pg.K_g:
-				self.start_game()
-
 			if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
 				self.grab_mode = not self.grab_mode
 				self.mouse_visible = not self.mouse_visible
