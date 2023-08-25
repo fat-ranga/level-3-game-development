@@ -1,4 +1,6 @@
 import moderngl as mgl
+from typing import Tuple
+
 from source.user_interface import *
 import pygame as pg
 from glm import *
@@ -11,15 +13,13 @@ class MainMenu:
 		self.ui_elements = []
 
 		self.background = TextureRect(game)
-		# self.background.size = vec2(2, 1)
 		self.background.texture_id = 5
 		self.background.name = "Background"
 		self.background.size_in_pixels = ivec2(1280, 720)
 		self.ui_elements.append(self.background)
 
 		self.title = TextureRect(game)
-		# self.title.size = vec2(0.5, 0.25)
-		self.title.keep_aspect = False
+		self.title.position = vec2(0, 0.5)
 		self.title.texture_id = 3
 		self.title.name = "Title"
 		self.title.size_in_pixels = ivec2(310, 64)
@@ -33,6 +33,7 @@ class MainMenu:
 		self.ui_elements.append(self.singleplayer_button)
 
 		self.exit_button = Button(game)
+		self.exit_button.position = vec2(0, -0.25)
 		self.exit_button.texture_id = 10
 		self.exit_button.is_selected_texture_id = 11
 		self.exit_button.name = "ExitButton"
@@ -48,11 +49,11 @@ class MainMenu:
 		for i in range(len(self.ui_elements)):
 			self.ui_elements[i].check_if_mouse_in_bounds(mouse_pos)
 
-	def convert_pg_screen_pos_to_moderngl_screen_pos(self, position: tuple[int, int]) -> vec2:
+	def convert_pg_screen_pos_to_moderngl_screen_pos(self, position: Tuple[int, int]) -> vec2:
 		# Precisely as the function says!
 		position = vec2(position)
 
-		# Normalise to 0 to 1 range.
+		# Normalise to 0-1 range.
 		position.x /= self.game.settings.window_resolution.x
 		position.y /= self.game.settings.window_resolution.y
 

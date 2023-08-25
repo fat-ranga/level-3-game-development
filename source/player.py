@@ -1,15 +1,16 @@
-import glm
+from glm import *
 import pygame as pg
 from source.camera import Camera
 from source.settings import *
-from glm import vec3
 from source.data_definitions import *
+from source.inventory import Inventory
 
 
 class Player(Camera):
 	def __init__(self, game, voxel_data, position=PLAYER_POS, yaw=-90, pitch=0):
 		self.game = game
 		self.voxel_data: VoxelDataDictionary = voxel_data
+		self.inventory = Inventory()
 
 		# Initialise camera stuff.
 		super().__init__(position,

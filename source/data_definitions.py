@@ -52,7 +52,6 @@ class VoxelDataDictionary:
 		self.texture_id = numba.typed.Dict.empty(*texture_id_key_value_types)
 
 def load_voxel_data(self, path: str, texture_ids):
-
 	file = open(path)
 	json_file_fr = json.load(file)
 
@@ -92,3 +91,7 @@ def load_voxel_data(self, path: str, texture_ids):
 		data.texture_id[key] = numba.types.uint64(texture_ids[key])
 
 	return data
+
+class Item:
+	def __init__(self):
+		pass
