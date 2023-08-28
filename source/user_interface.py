@@ -15,7 +15,7 @@ class Control:
 
 		# All relative to the Control's bounding box.
 		self.margin: vec2 = vec2(0.0, 0.0)
-		self.anchor: vec2 = vec2(0.5, 0.5)  # (0,0) is centre of screen in ModernGL.
+		self.anchor: vec2 = vec2(0.0, 0.0)  # (0,0) is centre of screen in ModernGL.
 		self.scale: vec2 = vec2(2.0, 2.0)
 		self.size_in_pixels: ivec2 = ivec2(0, 0)
 
@@ -33,11 +33,27 @@ class Control:
 			self.size.x *= self.game.settings.aspect_ratio
 
 		#if self.parent:
-		#	self.position
-		# self.size = self.scale
-		# self.size.x *= aspect_ratio_correction
+		#	self.position.x = self.anchor.x - 0#(self.size.x / 1)
+		#	self.position.y = self.anchor.y - (self.size.y / 1)
 
-		# self.position = self.size
+		if self.parent:
+			print("has parent")
+			offset_from_edges = self.anchor * self.size
+			self.position = self.anchor - offset_from_edges
+			print(self.position)
+			self.position += self.parent.position
+			print(self.position)
+		else:
+			offset_from_edges = self.anchor * self.size
+			self.position = self.anchor - offset_from_edges
+
+		#if self.parent:
+			#self.position = self.parent.position + self.anchor
+
+	# self.size = self.scale
+	# self.size.x *= aspect_ratio_correction
+
+	# self.position = self.size
 
 	def update(self):
 		if not self.visible:
@@ -50,19 +66,17 @@ class Control:
 
 		self.render()
 
-	def check_if_mouse_in_bounds(self, target_position: vec2):
-		self.is_mouse_position_in_bounds = False
+	def check_if_mouse_in_bounds(self, target_position: vec2) -> bool:
 		if target_position.x < self.position.x - self.size.x:
-			return
+			return False
 		if target_position.x > self.position.x + self.size.x:
-			return
+			return False
 		if target_position.y < self.position.y - self.size.y:
-			return
+			return False
 		if target_position.y > self.position.y + self.size.y:
-			return
+			return False
 
-		self.is_mouse_position_in_bounds = True
-		return
+		return True
 
 	def render(self):
 		pass

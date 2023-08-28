@@ -51,7 +51,7 @@ class Main:
 		self.paused = False
 		self.is_game_started = False
 
-		self.grab_mode: bool = True
+		self.grab_mode: bool = False
 		self.mouse_visible: bool = True
 
 		# Makes the current window active, I believe!
