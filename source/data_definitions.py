@@ -99,8 +99,9 @@ def load_voxel_data(path: str, texture_ids):
 
 # Composition over inheritance type thing!
 class Item:
-	max_amount: int = 64
 	string_id: str = "default"
+	
+	max_amount: int = 64
 	name: str = "Default"
 	icon: str = "default"
 

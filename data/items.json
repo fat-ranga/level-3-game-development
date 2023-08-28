@@ -13,7 +13,13 @@
   "icon": "ak_47",
   "places_voxel": false,
 
-  "ammunition_type": "7.62"
+  "gun": {
+    "ammunition_type": "7.62",
+    "recoil_x_max": 1.0,
+    "recoil_y_max": 1.0,
+    "recoil_x_min": 0.0,
+    "recoil_y_min": 0.0
+  }
 }
   
 

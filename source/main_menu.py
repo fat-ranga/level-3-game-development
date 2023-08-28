@@ -70,6 +70,10 @@ class MainMenu:
 		self.v_box_container.children.append(self.test_3)
 		self.v_box_container.resize()
 
+		self.ui_elements.append(self.v_box_container)
+
+		self.rebuild_ui()  # todo temporary
+
 	def update(self):
 		# Check mouse position and stuff for button selection.
 		mouse_pos = pg.mouse.get_pos()
