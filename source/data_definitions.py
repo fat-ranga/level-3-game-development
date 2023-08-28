@@ -27,12 +27,14 @@ class VoxelType:
 		self.name = "Air"
 		self.is_solid = False
 		self.texture_ids = ["stone", "stone", "stone", "stone", "stone", "stone"]
-	# self.icon
+
+
+# self.icon
 
 
 voxel_key_value_types = (numba.types.unicode_type, VoxelType.class_type.instance_type)
 voxel_string_id_key_value_types = (
-numba.types.uint8, numba.types.unicode_type)  # 8-bit int because there can only be 256 different voxel types.
+	numba.types.uint8, numba.types.unicode_type)  # 8-bit int because there can only be 256 different voxel types.
 voxel_numeric_id_key_value_types = (numba.types.unicode_type, numba.types.uint8)
 texture_id_key_value_types = (numba.types.unicode_type, numba.types.uint64)
 
@@ -51,7 +53,8 @@ class VoxelDataDictionary:
 		self.voxel_numeric_id = numba.typed.Dict.empty(*voxel_numeric_id_key_value_types)
 		self.texture_id = numba.typed.Dict.empty(*texture_id_key_value_types)
 
-def load_voxel_data(self, path: str, texture_ids):
+
+def load_voxel_data(path: str, texture_ids):
 	file = open(path)
 	json_file_fr = json.load(file)
 
@@ -74,8 +77,9 @@ def load_voxel_data(self, path: str, texture_ids):
 		# from the VoxelType() class for some reason. So we set it to be a new one instead.
 
 		# Can't make this list start off as empty, otherwise we get a memory footprint error or something.
-		new_list: numba.types.List(numba.types.string) = ["grass_side", "grass_side", "grass_top", "dirt", "grass_side", "grass_side"]
-		new_list.clear() # Delete the default values before appending new ones.
+		new_list: numba.types.List(numba.types.string) = ["grass_side", "grass_side", "grass_top", "dirt", "grass_side",
+														  "grass_side"]
+		new_list.clear()  # Delete the default values before appending new ones.
 		for id in json_file_fr[item]["texture_ids"]:
 			new_list.append(id)
 
@@ -92,6 +96,47 @@ def load_voxel_data(self, path: str, texture_ids):
 
 	return data
 
+
+# Composition over inheritance type thing!
 class Item:
+	max_amount: int = 64
+	string_id: str = "default"
+	name: str = "Default"
+	icon: str = "default"
+
 	def __init__(self):
+		self.amount: int = 1
+
+
+class Gun:
+	ammunition_type: str = "7.62"
+
+	recoil_x_max: float = 1.0
+	recoil_y_max: float = 1.0
+
+	recoil_x_min: float = 0.0
+	recoil_y_min: float = 0.0
+
+	mesh = None # TODO: mesh stuff
+
+	def __init__(self):
+		self.magazine: Magazine = None
+		self.projectile_in_chamber: bool = False
+
+	def fire(self):
 		pass
+
+	def reload(self):
+		pass
+
+
+class Magazine:
+	ammunition_type: str = "7.62"
+	max_ammo: int = 30
+
+	def __init__(self):
+		self.ammo: int = 0
+
+
+def load_items(path: str):
+	pass  # TODO: component rather than inheritance?

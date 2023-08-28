@@ -72,20 +72,27 @@ class Main:
 		#pg.display.set_caption("Kiwicraft")
 		self.paused = True
 
+		pg.display.set_caption("Loading textures...")
 		self.textures = Textures(self)
-		self.voxel_data: VoxelDataDictionary = load_voxel_data(self,
+		pg.display.set_caption("Loading voxel data...")
+		self.voxel_data: VoxelDataDictionary = load_voxel_data(
 															   "data/voxel_types.json",
 															   self.textures.atlas_packer.texture_ids)
 		# todo temp
+		pg.display.set_caption("Making camera...")
 		self.menu_camera = Camera(glm.vec3(0,0,0),
 							 0,
 							 0,
 							 self.settings.v_fov,
 							 self.settings.h_fov,
 							 self.settings.aspect_ratio)
+
+		pg.display.set_caption("Creating shader program...")
 		self.shader_program = ShaderProgram(self, self.menu_camera)
 
+		pg.display.set_caption("Creating main menu...")
 		self.main_menu = MainMenu(self)
+		pg.display.set_caption("Kiwicraft")
 
 	def start_game(self):
 		self.paused = False

@@ -18,16 +18,12 @@ class World:
 		self.chunks = [None for _ in range(WORLD_VOL)]
 
 		# These are the actual voxels, all of our chunks only have a pointer to this.
-		# dtype='uint8' means we store each voxel as an unsigned 8-bit integer, which
+		# dtype="uint8" means we store each voxel as an unsigned 8-bit integer, which
 		# means we can have up to 256 different block types.
 		self.voxels = np.empty([WORLD_VOL, CHUNK_VOL], dtype="uint8")
 		self.build_chunks()
 		self.build_chunk_mesh()
 		self.voxel_handler = VoxelHandler(self)
-
-	@njit
-	def create_dict(self, items):
-		return {k: v for k, v in items}
 
 	def build_chunks(self):
 		for x in range(WORLD_W):

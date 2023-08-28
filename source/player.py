@@ -1,5 +1,7 @@
+import random
 from glm import *
 import pygame as pg
+
 from source.camera import Camera
 from source.settings import *
 from source.data_definitions import *
@@ -10,7 +12,8 @@ class Player(Camera):
 	def __init__(self, game, voxel_data, position=PLAYER_POS, yaw=-90, pitch=0):
 		self.game = game
 		self.voxel_data: VoxelDataDictionary = voxel_data
-		self.inventory = Inventory()
+
+		self.inventory = Inventory(ivec2(9, 4))
 
 		# Initialise camera stuff.
 		super().__init__(position,
@@ -24,7 +27,7 @@ class Player(Camera):
 		self.is_right_mouse_button_held: bool = False
 
 		# Timer for breaking and placing voxels when mouse button is held down.
-		self.max_change_voxel_timer = 10
+		self.max_change_voxel_timer: int = 10
 		self.change_voxel_timer = self.max_change_voxel_timer
 
 		# Movement stuff.
@@ -33,10 +36,12 @@ class Player(Camera):
 		self.gravity: vec3 = vec3(0, -9.81, 0)
 		self.sprint_multiplier: float = 2.0
 
+		# Collision bounding box dimensions.
 		self.regular_dimensions = vec3(0.3, 1.9, 0.3)
 		self.underwater_dimensions = vec3(0.3, 0.3, 0.3)
 		self.dimensions = self.regular_dimensions
 
+		# For positioning the head correctly.
 		self.regular_dimensions_offset = vec3(0.0, 1.7, 0.0)
 		self.underwater_dimensions_offset = vec3(0.0, 0.15, 0.0)
 		self.dimensions_offset = self.regular_dimensions_offset
@@ -53,10 +58,10 @@ class Player(Camera):
 
 		self.mouse_control()
 		self.keyboard_control()
-
 		self.handle_collision()
-
 		self.position += self.velocity
+
+		#self.process_recoil()
 
 		super().update()  # Call camera update methods.
 
@@ -72,6 +77,9 @@ class Player(Camera):
 		self.v_fov = self.game.settings.v_fov
 		self.aspect_ratio = self.game.settings.aspect_ratio
 		self.frustum.update_factors()
+
+	def create_ui(self):
+		pass
 
 	def handle_event(self, event):
 		# Adding and removing voxels with mouse.
@@ -92,16 +100,19 @@ class Player(Camera):
 				return
 
 	def mouse_control(self):
+		# Get mouse movement.
 		mouse_dx, mouse_dy = pg.mouse.get_rel()
 		if mouse_dx:
 			self.rotate_yaw(delta_x=mouse_dx * self.game.settings.mouse_sensitivity)
 		if mouse_dy:
 			self.rotate_pitch(delta_y=mouse_dy * self.game.settings.mouse_sensitivity)
 
+		# Placing and breaking voxels timer.
 		if not self.change_voxel_timer < 0:
 			self.change_voxel_timer -= 1
 			return
 
+		# Place or break voxel.
 		if self.is_left_mouse_button_held:
 			voxel_handler = self.game.scene.world.voxel_handler
 			# We break or place a voxel depending on the button pressed.
@@ -113,11 +124,22 @@ class Player(Camera):
 			voxel_handler.set_voxel(1)
 			self.change_voxel_timer = self.max_change_voxel_timer
 
+	def shake_camera(self):
+		print("shook cam au")
+		ranga = (random.random() - 0.5) * 0.01
+		cap = -random.random() * 0.01
+
+		self.rotate_yaw(delta_x=ranga)
+		self.rotate_pitch(delta_y=cap)
+
 	def keyboard_control(self):
 		# Calculate movement direction based on keyboard input.
 
 		key_state = pg.key.get_pressed()
 		self.movement_direction = vec3(0, 0, 0)
+
+		if key_state[pg.K_g]:
+			self.shake_camera()
 
 		if self.is_swimming:
 			self.movement_underwater(key_state)

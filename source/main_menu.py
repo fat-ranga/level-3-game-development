@@ -43,28 +43,12 @@ class MainMenu:
 		self.rebuild_ui()  # todo temporary
 
 	def update(self):
+		# Check mouse position and stuff for button selection.
 		mouse_pos = pg.mouse.get_pos()
-		mouse_pos = self.convert_pg_screen_pos_to_moderngl_screen_pos(mouse_pos)
+		mouse_pos = convert_pg_screen_pos_to_moderngl_screen_pos(self.game, vec2(mouse_pos))
 
 		for i in range(len(self.ui_elements)):
 			self.ui_elements[i].check_if_mouse_in_bounds(mouse_pos)
-
-	def convert_pg_screen_pos_to_moderngl_screen_pos(self, position: Tuple[int, int]) -> vec2:
-		# Precisely as the function says!
-		position = vec2(position)
-
-		# Normalise to 0-1 range.
-		position.x /= self.game.settings.window_resolution.x
-		position.y /= self.game.settings.window_resolution.y
-
-		# Pygame: (0, 0) is top-left. (1, 1) is bottom-right.
-		# ModernGL: (-1, 1) is top-left. (1, -1) is bottom-right.
-		position.y = 1 - position.y
-		position *= 2
-		position.x -= 1
-		position.y -= 1
-
-		return position
 
 	def render(self):
 		# Disable Z depth testing, since we are not in 3D

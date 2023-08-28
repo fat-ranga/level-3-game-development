@@ -1,6 +1,20 @@
 {
-  "air": {
-  }
+"stone": {
+  "name": "Stone",
+  "max_amount": 64,
+  "icon": "stone",
+  "places_voxel": true,
+  "voxel_to_place": "stone"
+},
+
+"ak_47": {
+  "name": "AK-47",
+  "max_amount": 1,
+  "icon": "ak_47",
+  "places_voxel": false,
+
+  "ammunition_type": "7.62"
+}
   
 
 

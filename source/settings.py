@@ -21,10 +21,10 @@ NUM_SAMPLES = 0
 # TODO World generation seed.
 SEED = 16
 
-# ray casting
+# Ray-casting distance in metres.
 MAX_RAY_DIST = 5
 
-# chunk
+# Chunk stuff.
 CHUNK_SIZE = 32
 H_CHUNK_SIZE = CHUNK_SIZE // 2
 CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE
@@ -32,7 +32,7 @@ CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE
 CHUNK_SPHERE_RADIUS = H_CHUNK_SIZE * math.sqrt(3)
 
 # World.
-WORLD_W, WORLD_H = 8, 1
+WORLD_W, WORLD_H = 8, 2
 WORLD_D = WORLD_W
 WORLD_AREA = WORLD_W * WORLD_D
 WORLD_VOL = WORLD_AREA * WORLD_H
