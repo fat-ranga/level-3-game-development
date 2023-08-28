@@ -38,28 +38,24 @@ class Scene:
 	def render(self):
 		# Render chunks and stuff.
 		self.world.render()
+
+		# Render skybox after we have rendered all the other solid stuff,
+		# such as the chunks. This means fewer fragments to fill for the GPU.
+		self.skybox.render()
 		
-		# rendering without cull face
+		# Disable backface culling, since we need to see both sides of water / clouds.
 		self.game.ctx.disable(mgl.CULL_FACE)
 		self.clouds.render()
 		self.water.render()
-
 		self.game.ctx.enable(mgl.CULL_FACE)
 		
 		# Render player's voxel selection marker.
 		self.voxel_marker.render()
 
-		# Render skybox after everything else. This is more efficient
-		# because everything else has been depth-tested first, and this means
-		# fewer pixels to fill. TODO: what effect would this have on antialiasing?
-		self.skybox.render()
-
 		self.game.ctx.disable(mgl.DEPTH_TEST)
-
 		# Render UI.
 		for i in range(len(self.ui_elements)):
 			self.ui_elements[i].render()
-
 		self.game.ctx.enable(mgl.DEPTH_TEST)
 
 	def update_ui(self):
@@ -67,8 +63,18 @@ class Scene:
 		mouse_pos = pg.mouse.get_pos()
 		mouse_pos = convert_pg_screen_pos_to_moderngl_screen_pos(self.game, vec2(mouse_pos))
 
+		# De-select everything first.
 		for i in range(len(self.ui_elements)):
-			self.ui_elements[i].check_if_mouse_in_bounds(mouse_pos)
+			self.ui_elements[i].is_mouse_position_in_bounds = False
+
+		# Find the first top-most element that the mouse fits in
+		# and make that the selected one, ignoring everything underneath.
+		for i in range(len(self.ui_elements)):
+			# If we have something on top selected, make sure not to
+			# select anything underneath by returning out of this loop.
+			if self.ui_elements[-i - 1].check_if_mouse_in_bounds(mouse_pos):
+				self.ui_elements[-i - 1].is_mouse_position_in_bounds = True
+				return
 
 	def rebuild_ui(self):
 		# Called when the aspect ratio / window size is changed, resizes UI accordingly.
@@ -81,7 +87,7 @@ class Scene:
 			for y in range(self.game.player.inventory.height - 1):
 				new_slot = Button(self.game)
 				new_slot.size_in_pixels = ivec2(20, 20)
-				new_slot.position = vec2(x / 20, y / 20)
+				new_slot.anchor = vec2(x / 20, y / 20)
 				new_slot.scale = vec2(1, 1)
 				new_slot.texture_id = 6
 				new_slot.is_selected_texture_id = 12

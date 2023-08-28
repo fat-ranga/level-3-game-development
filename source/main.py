@@ -101,6 +101,9 @@ class Main:
 		# Hides the mouse.
 		self.mouse_visible = False
 		pg.mouse.set_visible(self.mouse_visible)
+		# Constrains the mouse to the window.
+		self.grab_mode = True
+		pg.event.set_grab(self.grab_mode)
 
 		self.player = Player(self, self.voxel_data)
 		self.shader_program.current_camera = self.player

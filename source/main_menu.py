@@ -29,20 +29,30 @@ class MainMenu:
 
 		self.test_1 = Button(game)
 		self.test_1.texture_id = 10
-		self.test_1.anchor = vec2(0, 0)
+		self.test_1.anchor = vec2(1, 0)
 		self.test_1.is_selected_texture_id = 11
 		self.test_1.name = "SingleplayerButton"
 		self.test_1.size_in_pixels = ivec2(87, 27)
 		self.ui_elements.append(self.test_1)
 
 		self.test_2 = Button(game)
-		self.test_2.anchor = vec2(1, -1)
+		self.test_2.anchor = vec2(-1, -1)
 		self.test_2.texture_id = 6
 		self.test_2.is_selected_texture_id = 12
 		self.test_2.name = "ExitButton"
-		self.test_2.size_in_pixels = ivec2(20, 20)
-		self.test_2.parent = self.test_1
+		self.test_2.size_in_pixels = ivec2(40, 40)
+		#self.test_2.parent = self.v_box_container
 		self.ui_elements.append(self.test_2)
+
+		self.test_3 = Button(game)
+		self.test_3.anchor = vec2(-1, -1)
+		self.test_3.texture_id = 6
+		self.test_3.is_selected_texture_id = 12
+		self.test_3.name = "ExitButton"
+		self.test_3.size_in_pixels = ivec2(20, 20)
+		#self.test_3.parent = self.v_box_container
+		self.ui_elements.append(self.test_3)
+
 
 		#self.exit_button = Button(game)
 		#self.exit_button.position = vec2(0, -0.25)
@@ -53,6 +63,12 @@ class MainMenu:
 		#self.ui_elements.append(self.exit_button)
 
 		self.rebuild_ui()  # todo temporary
+
+		self.v_box_container = VBoxContainer(game)
+		self.v_box_container.children.append(self.test_1)
+		self.v_box_container.children.append(self.test_2)
+		self.v_box_container.children.append(self.test_3)
+		self.v_box_container.resize()
 
 	def update(self):
 		# Check mouse position and stuff for button selection.

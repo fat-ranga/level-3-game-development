@@ -32,38 +32,22 @@ class Control:
 		if not self.keep_aspect:
 			self.size.x *= self.game.settings.aspect_ratio
 
-		#if self.parent:
-		#	self.position.x = self.anchor.x - 0#(self.size.x / 1)
-		#	self.position.y = self.anchor.y - (self.size.y / 1)
-
 		if self.parent:
-			#self.anchor *=
-			print(self.parent.size)
-			real_anchor = self.anchor * self.parent.size
+			local_anchor = self.anchor * self.parent.size
 
+			# Scale first...
 			offset_from_edges = self.anchor * self.size
-			#self.position = real_anchor - offset_from_edges
-			self.position = real_anchor - offset_from_edges
+			self.position = local_anchor - offset_from_edges
+
+			# Then translate.
+			self.position += self.parent.position
 		else:
 			offset_from_edges = self.anchor * self.size
 			self.position = self.anchor - offset_from_edges
 
-		#if self.parent:
-			#self.position = self.parent.position + self.anchor
-
-	# self.size = self.scale
-	# self.size.x *= aspect_ratio_correction
-
-	# self.position = self.size
-
 	def update(self):
 		if not self.visible:
 			return
-
-		# if not self.parent:
-		#	self.position = vec2(self.game.settings.window_resolution.x, self.game.settings.window_resolution.y) * self.anchor
-		# else:
-		#	self.position = self.parent.position * self.anchor
 
 		self.render()
 
@@ -121,13 +105,23 @@ class Button(TextureRect):
 
 
 class Container(Control):
-	def __init__(self):
-		super().__init__()
+	def __init__(self, game):
+		super().__init__(game)
 
 
-class VBoxContainer(Container):
-	def __init__(self):
-		super().__init__()
+class VBoxContainer(Control):
+	def __init__(self, game):
+		super().__init__(game)
+		self.children: list = []
+
+	def resize(self):
+		self.size = vec2(0, 0)
+		for i in range(len(self.children)):
+			print(self.children[i].size.y)
+			self.size.y += self.children[i].size.y
+
+		print(self.size)
+
 
 
 def convert_pg_screen_pos_to_moderngl_screen_pos(game, position: vec2) -> vec2:
