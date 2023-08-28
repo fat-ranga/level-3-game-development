@@ -29,14 +29,14 @@ class MainMenu:
 
 		self.test_1 = Button(game)
 		self.test_1.texture_id = 10
-		self.test_1.anchor = vec2(0.5, 0)
+		self.test_1.anchor = vec2(0, 0)
 		self.test_1.is_selected_texture_id = 11
 		self.test_1.name = "SingleplayerButton"
 		self.test_1.size_in_pixels = ivec2(87, 27)
 		self.ui_elements.append(self.test_1)
 
 		self.test_2 = Button(game)
-		self.test_2.anchor = vec2(0, 0)
+		self.test_2.anchor = vec2(1, -1)
 		self.test_2.texture_id = 6
 		self.test_2.is_selected_texture_id = 12
 		self.test_2.name = "ExitButton"
@@ -63,8 +63,8 @@ class MainMenu:
 		for i in range(len(self.ui_elements)):
 			self.ui_elements[i].is_mouse_position_in_bounds = False
 
-		# Find the first element that the mouse fits in
-		# and make that the selected one, ignoring the rest.
+		# Find the first top-most element that the mouse fits in
+		# and make that the selected one, ignoring everything underneath.
 		for i in range(len(self.ui_elements)):
 			# If we have something on top selected, make sure not to
 			# select anything underneath by returning out of this loop.

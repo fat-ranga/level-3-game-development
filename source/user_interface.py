@@ -37,12 +37,13 @@ class Control:
 		#	self.position.y = self.anchor.y - (self.size.y / 1)
 
 		if self.parent:
-			print("has parent")
+			#self.anchor *=
+			print(self.parent.size)
+			real_anchor = self.anchor * self.parent.size
+
 			offset_from_edges = self.anchor * self.size
-			self.position = self.anchor - offset_from_edges
-			print(self.position)
-			self.position += self.parent.position
-			print(self.position)
+			#self.position = real_anchor - offset_from_edges
+			self.position = real_anchor - offset_from_edges
 		else:
 			offset_from_edges = self.anchor * self.size
 			self.position = self.anchor - offset_from_edges
@@ -141,7 +142,6 @@ def convert_pg_screen_pos_to_moderngl_screen_pos(game, position: vec2) -> vec2:
 	# ModernGL: (-1, 1) is top-left. (1, -1) is bottom-right.
 	position.y = 1 - position.y
 	position *= 2
-	position.x -= 1
-	position.y -= 1
+	position -= 1
 
 	return position
