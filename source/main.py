@@ -18,9 +18,10 @@ from source.main_menu import MainMenu
 class Main:
 	def __init__(self):
 		pg.init()
-		pg.display.set_caption("Compiling...")
 
-		icon = pg.image.load("data/icon.png")
+		pg.display.set_caption("Compiling...")  # Window name.
+
+		icon = pg.image.load("data/icon.png")  # Window icon.
 		pg.display.set_icon(icon)
 
 		# Load settings from configuration file next to executable.
@@ -29,18 +30,21 @@ class Main:
 		# Bunch of OpenGL boilerplate stuff.
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, MAJOR_VER)
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, MINOR_VER)
-		# Prohibit use of deprecated functions.
+		# Prohibit use of deprecated functions, since we are using version 3.3, which is 'modern' OpenGL.
 		pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
 		pg.display.gl_set_attribute(pg.GL_DEPTH_SIZE, Z_DEPTH_SIZE)
 		# 24-bit depth for the depth buffer.
 		pg.display.gl_set_attribute(pg.GL_MULTISAMPLESAMPLES, NUM_SAMPLES)
 
-		# Set window resolution from settings and set OpenGl context.
+		# Set window resolution from settings.
 		pg.display.set_mode(self.settings.window_resolution, flags=pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE,
 							vsync=self.settings.v_sync)
+
+		# Grabs the window context created by pygame.
+		# This is what we send all our vertex data and rendering stuff to.
 		self.ctx = mgl.create_context()
 
-		# Enable fragment depth-testing, culling of invisible faces and colour blending.
+		# Enable fragment depth-testing, culling of invisible faces and alpha blending.
 		self.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
 		# Automatic garbage collection for OpenGL objects.
 		self.ctx.gc_mode = "auto"
@@ -53,14 +57,11 @@ class Main:
 
 		self.grab_mode: bool = False
 		self.mouse_visible: bool = True
+		pg.event.set_grab(self.grab_mode)  # Constrains the mouse to window bounds.
+		pg.mouse.set_visible(self.mouse_visible)  # Shows or hides the mouse.
 
-		# Makes the current window active, I believe!
-		pg.event.set_grab(self.grab_mode)
+		self.is_running = True  # If we set this to False, the program closes.
 
-		# Shows the mouse.
-		pg.mouse.set_visible(self.mouse_visible)
-
-		self.is_running = True
 		self.on_init()
 
 	def load_settings(self) -> SettingsProfile:
@@ -69,23 +70,23 @@ class Main:
 		return SettingsProfile()
 
 	def on_init(self):
-		#pg.display.set_caption("Kiwicraft")
+		# pg.display.set_caption("Kiwicraft")
 		self.paused = True
 
 		pg.display.set_caption("Loading textures...")
 		self.textures = Textures(self)
 		pg.display.set_caption("Loading voxel data...")
 		self.voxel_data: VoxelDataDictionary = load_voxel_data(
-															   "data/voxel_types.json",
-															   self.textures.atlas_packer.texture_ids)
+			"data/voxel_types.json",
+			self.textures.atlas_packer.texture_ids)
 		# todo temp
 		pg.display.set_caption("Making camera...")
-		self.menu_camera = Camera(glm.vec3(0,0,0),
-							 0,
-							 0,
-							 self.settings.v_fov,
-							 self.settings.h_fov,
-							 self.settings.aspect_ratio)
+		self.menu_camera = Camera(glm.vec3(0, 0, 0),
+								  0,
+								  0,
+								  self.settings.v_fov,
+								  self.settings.h_fov,
+								  self.settings.aspect_ratio)
 
 		pg.display.set_caption("Creating shader program...")
 		self.shader_program = ShaderProgram(self, self.menu_camera)
@@ -113,6 +114,7 @@ class Main:
 						   voxel_data=self.voxel_data)
 
 	def update(self):
+		# todo: change this to a reference variable like 'current_scene' or something maybe
 		if not self.paused:
 			self.player.update()
 			self.shader_program.update()

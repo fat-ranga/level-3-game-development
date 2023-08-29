@@ -52,6 +52,8 @@ class Scene:
 		# Render player's voxel selection marker.
 		self.voxel_marker.render()
 
+		# Disable depth-testing, since we are just drawing UI
+		# elements on top of each other in screen-space.
 		self.game.ctx.disable(mgl.DEPTH_TEST)
 		# Render UI.
 		for i in range(len(self.ui_elements)):
@@ -61,7 +63,7 @@ class Scene:
 	def update_ui(self):
 		# Check mouse position and stuff for button selection.
 		mouse_pos = pg.mouse.get_pos()
-		mouse_pos = convert_pg_screen_pos_to_moderngl_screen_pos(self.game, vec2(mouse_pos))
+		mouse_pos = convert_pygame_screen_pos_to_moderngl_screen_pos(self.game, vec2(mouse_pos))
 
 		# De-select everything first.
 		for i in range(len(self.ui_elements)):

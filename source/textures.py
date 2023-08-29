@@ -22,6 +22,8 @@ class Textures:
 		self.exit = self.load("ui/exit.png")
 		self.exit_selected = self.load("ui/exit_selected.png")
 		self.tile_selected = self.load("ui/tile_selected.png")
+		self.settings = self.load("ui/settings.png")
+		self.settings_selected = self.load("ui/settings_selected.png")
 		
 		# Make the atlas texture.
 		self.texture_paths: list = self.atlas_packer.get_texture_paths_in_directory()
@@ -42,6 +44,8 @@ class Textures:
 		self.exit.use(location=10)
 		self.exit_selected.use(location=11)
 		self.tile_selected.use(location=12)
+		self.settings.use(location=13)
+		self.settings_selected.use(location=14)
 	
 	def load_texture(self, texture):
 		# Texture is the wrong way round for some reason, so we have to flip it.

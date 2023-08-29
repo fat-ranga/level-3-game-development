@@ -10,74 +10,80 @@ class MainMenu:
 	def __init__(self, game):
 		self.game = game
 
-		self.ui_elements = []
+		# UI elements are rendered in the order that
+		# they are added to this list.
+		self.ui_elements: list = []
 
-		self.background = TextureRect(game)
-		self.background.texture_id = 5
+		self.create_ui()
+
+		self.rebuild_ui()  # todo temporary
+		#self.rebuild_ui()
+
+	def create_ui(self):
+		self.background = TextureRect(self.game)
 		self.background.name = "Background"
+		self.background.texture_id = 5
 		self.background.size_in_pixels = ivec2(1280, 720)
 		self.ui_elements.append(self.background)
 
-		#self.title = TextureRect(game)
-		#self.title.position = vec2(1, 1)
-		#self.title.anchor = vec2(-1, -1)
-		#self.title.texture_id = 3
-		#self.title.name = "Title"
-		#self.title.size_in_pixels = ivec2(310, 64)
-		#self.title.parent = True
-		#self.ui_elements.append(self.title)
+		self.title = TextureRect(self.game)
+		self.title.name = "Title"
+		self.title.anchor = vec2(0, 0.75)
+		self.title.texture_id = 3
+		self.title.size_in_pixels = ivec2(310, 64)
+		self.ui_elements.append(self.title)
 
-		self.test_1 = Button(game)
-		self.test_1.texture_id = 10
-		self.test_1.anchor = vec2(1, 0)
-		self.test_1.is_selected_texture_id = 11
-		self.test_1.name = "SingleplayerButton"
-		self.test_1.size_in_pixels = ivec2(87, 27)
-		self.ui_elements.append(self.test_1)
+		self.exit_button = Button(self.game)
+		self.exit_button.name = "ExitButton"
+		self.exit_button.texture_id = 10
+		self.exit_button.is_selected_texture_id = 11
+		self.exit_button.size_in_pixels = ivec2(87, 27)
+		self.ui_elements.append(self.exit_button)
 
-		self.test_2 = Button(game)
-		self.test_2.anchor = vec2(-1, -1)
-		self.test_2.texture_id = 6
-		self.test_2.is_selected_texture_id = 12
-		self.test_2.name = "ExitButton"
-		self.test_2.size_in_pixels = ivec2(40, 40)
-		#self.test_2.parent = self.v_box_container
-		self.ui_elements.append(self.test_2)
+		self.single_player_button = Button(self.game)
+		self.single_player_button.name = "SingleplayerButton"
+		self.single_player_button.texture_id = 8
+		self.single_player_button.is_selected_texture_id = 9
+		self.single_player_button.size_in_pixels = ivec2(87, 27)
+		self.ui_elements.append(self.single_player_button)
 
-		self.test_3 = Button(game)
-		self.test_3.anchor = vec2(-1, -1)
-		self.test_3.texture_id = 6
-		self.test_3.is_selected_texture_id = 12
-		self.test_3.name = "ExitButton"
-		self.test_3.size_in_pixels = ivec2(20, 20)
-		#self.test_3.parent = self.v_box_container
-		self.ui_elements.append(self.test_3)
+		self.settings_button = Button(self.game)
+		self.settings_button.name = "SettingsButton"
+		self.settings_button.texture_id = 13
+		self.settings_button.is_selected_texture_id = 14
+		self.settings_button.size_in_pixels = ivec2(87, 27)
+		self.ui_elements.append(self.settings_button)
+
+		self.cap_button = Button(self.game)
+		self.cap_button.name = "CapButton"
+		self.cap_button.texture_id = 13
+		self.cap_button.is_selected_texture_id = 14
+		self.cap_button.size_in_pixels = ivec2(87, 27)
+		self.ui_elements.append(self.cap_button)
+
+		self.menu_buttons_container = VBoxContainer(self.game)
+		self.menu_buttons_container.container_elements.append(self.single_player_button)
+		self.menu_buttons_container.container_elements.append(self.settings_button)
+		self.menu_buttons_container.container_elements.append(self.exit_button)
+		self.menu_buttons_container.container_elements.append(self.cap_button)
+		self.menu_buttons_container.resize()
+		#self.menu_buttons_container.resize()
+		#self.menu_buttons_container.resize()
+		self.ui_elements.append(self.menu_buttons_container)
+
+		# Set anchors within our container depending on how many elements are in there.
+		#container_elements[0].anchor = vec2(0, 1)
+		#print(container_elements[0].name)
+		#container_elements[1].anchor = vec2(0, -1)
+		#for i in range(len(container_elements)):
+		#	container_elements[i].anchor = 1 - (i / len(container_elements))
 
 
-		#self.exit_button = Button(game)
-		#self.exit_button.position = vec2(0, -0.25)
-		#self.exit_button.texture_id = 10
-		#self.exit_button.is_selected_texture_id = 11
-		#self.exit_button.name = "ExitButton"
-		#self.exit_button.size_in_pixels = ivec2(87, 27)
-		#self.ui_elements.append(self.exit_button)
-
-		self.rebuild_ui()  # todo temporary
-
-		self.v_box_container = VBoxContainer(game)
-		self.v_box_container.children.append(self.test_1)
-		self.v_box_container.children.append(self.test_2)
-		self.v_box_container.children.append(self.test_3)
-		self.v_box_container.resize()
-
-		self.ui_elements.append(self.v_box_container)
-
-		self.rebuild_ui()  # todo temporary
 
 	def update(self):
 		# Check mouse position and stuff for button selection.
 		mouse_pos = pg.mouse.get_pos()
-		mouse_pos = convert_pg_screen_pos_to_moderngl_screen_pos(self.game, vec2(mouse_pos))
+		mouse_pos = convert_pygame_screen_pos_to_moderngl_screen_pos(self.game, vec2(mouse_pos))
 
 		# De-select everything first.
 		for i in range(len(self.ui_elements)):
@@ -86,6 +92,9 @@ class MainMenu:
 		# Find the first top-most element that the mouse fits in
 		# and make that the selected one, ignoring everything underneath.
 		for i in range(len(self.ui_elements)):
+			# Move onto the next element if this one doesn't detect the mouse position.
+			if not self.ui_elements[-i - 1].detects_mouse:
+				continue
 			# If we have something on top selected, make sure not to
 			# select anything underneath by returning out of this loop.
 			if self.ui_elements[-i - 1].check_if_mouse_in_bounds(mouse_pos):
@@ -105,9 +114,10 @@ class MainMenu:
 		self.game.ctx.enable(mgl.DEPTH_TEST)
 
 	def rebuild_ui(self):
+		#self.menu_buttons_container.resize()
 		# Called when the aspect ratio / window size is changed, resizes UI accordingly.
 		for i in range(len(self.ui_elements)):
-			self.ui_elements[i].resize()
+			self.ui_elements[-i - 1].resize()
 
 	def handle_event(self, event):
 		if event.type == pg.MOUSEBUTTONUP:
