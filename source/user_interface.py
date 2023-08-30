@@ -132,11 +132,19 @@ class VBoxContainer(Control):
 				largest_x_size = self.container_elements[i].size_in_pixels.x
 
 		self.size_in_pixels.x = largest_x_size
-
-		self.container_elements[0].anchor = vec2(0, 1)
-		self.container_elements[1].anchor = vec2(0, 0.333)
-		self.container_elements[2].anchor = vec2(0, -0.333)
-		self.container_elements[3].anchor = vec2(0, -1)
+		
+		number_of_ui_elements: int = len(self.container_elements)
+		
+		for i in range(number_of_ui_elements):
+			#y_position: float = 1 - (i * (2 / number_of_ui_elements))
+			y_position: float = 1 - (i / 1.5) # TODO 1.5 might be y size
+			
+			self.container_elements[i].anchor = vec2(0, y_position)
+			
+		#self.container_elements[0].anchor = vec2(0, 1)
+		#self.container_elements[1].anchor = vec2(0, 0.333)
+		#self.container_elements[2].anchor = vec2(0, -0.333)
+		#self.container_elements[3].anchor = vec2(0, -1)
 
 
 
