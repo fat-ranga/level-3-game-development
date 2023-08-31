@@ -69,6 +69,10 @@ class Scene:
 		for i in range(len(self.ui_elements)):
 			self.ui_elements[i].is_mouse_position_in_bounds = False
 
+		# If the mouse isn't visible, then don't try to select anything.
+		if not self.game.mouse_visible:
+			return
+
 		# Find the first top-most element that the mouse fits in
 		# and make that the selected one, ignoring everything underneath.
 		for i in range(len(self.ui_elements)):

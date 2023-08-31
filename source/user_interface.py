@@ -34,9 +34,7 @@ class Control:
 			self.size.x *= self.game.settings.aspect_ratio
 
 		if self.parent:
-			print(self.name)
 			local_anchor = self.anchor * self.parent.size
-			print(f"parentsize{self.parent.size}")
 
 			# Scale first...
 			offset_from_edges = self.anchor * self.size
@@ -44,7 +42,6 @@ class Control:
 
 			# Then translate.
 			self.position += self.parent.position
-			#print(self.position)
 		else:
 			offset_from_edges = self.anchor * self.size
 			self.position = self.anchor - offset_from_edges
@@ -134,12 +131,34 @@ class VBoxContainer(Control):
 		self.size_in_pixels.x = largest_x_size
 		
 		number_of_ui_elements: int = len(self.container_elements)
-		
-		for i in range(number_of_ui_elements):
+
+		y_anchor: float = 0.0
+		#for i in range(number_of_ui_elements):
+		#	self.container_elements[i].anchor = vec2(0, 1 - y_anchor)
+		#	y_anchor += self.container_elements[i].size.y
+		self.container_elements[0].anchor = vec2(0, 1)
+		#print(self.container_elements[0].size.y) # todo: scale as we go?
+		ranga = self.container_elements[2].size.y
+		self.container_elements[1].anchor = vec2(0, 0.33333 + ranga)
+		self.container_elements[2].anchor = vec2(0, -0.33333 + ranga)
+		#print(self.container_elements[1].size.y)
+		self.container_elements[3].anchor = vec2(0, -1)
+
+
+			#self.container_elements[i].anchor = vec2(0, 1 - y_anchor)
+			#y_anchor += self.container_elements[i].size.y * 12
+			#print(f"element y size{self.container_elements[i].size.y}")
+
+
 			#y_position: float = 1 - (i * (2 / number_of_ui_elements))
-			y_position: float = 1 - (i / 1.5) # TODO 1.5 might be y size
-			
-			self.container_elements[i].anchor = vec2(0, y_position)
+
+			#4  y_position: float = 1 - (i / 1.5) # TODO 1.5 might be y size
+			#3  y_position: float = 1 - (i / 1)
+			#2  y_position: float = 1 - (i / 0.5)
+			#magical_number: float = (number_of_ui_elements - 1) * 0.5
+			#y_position: float = 1 - (i / magical_number)
+			#
+			#self.container_elements[i].anchor = vec2(0, y_position)
 			
 		#self.container_elements[0].anchor = vec2(0, 1)
 		#self.container_elements[1].anchor = vec2(0, 0.333)

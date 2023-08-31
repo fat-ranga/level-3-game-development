@@ -38,7 +38,7 @@ void main() {
         // todo make this based on whether the player is under the water
     else{
         // Atmosphere / fog. More alpha means more blue background showing.
-        tex_col = mix(tex_col, bg_color * vec3(0.5, 0.67, 1), (1.0 - exp2(-0.00001 * fog_dist * fog_dist)));}
+        tex_col = mix(tex_col, bg_color * vec3(0.3, 0.5, 0.85), (1.0 - exp2(-0.00001 * fog_dist * fog_dist)));}
 
     tex_col = pow(tex_col, inv_gamma);
     fragColor = vec4(tex_col, 1.0);

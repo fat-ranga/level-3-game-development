@@ -38,6 +38,7 @@ class MainMenu:
 		self.exit_button.texture_id = 10
 		self.exit_button.is_selected_texture_id = 11
 		self.exit_button.size_in_pixels = ivec2(87, 27)
+		self.exit_button.resize()
 		self.ui_elements.append(self.exit_button)
 
 		self.single_player_button = Button(self.game)
@@ -45,6 +46,7 @@ class MainMenu:
 		self.single_player_button.texture_id = 8
 		self.single_player_button.is_selected_texture_id = 9
 		self.single_player_button.size_in_pixels = ivec2(87, 27)
+		self.single_player_button.resize()
 		self.ui_elements.append(self.single_player_button)
 
 		self.settings_button = Button(self.game)
@@ -52,13 +54,15 @@ class MainMenu:
 		self.settings_button.texture_id = 13
 		self.settings_button.is_selected_texture_id = 14
 		self.settings_button.size_in_pixels = ivec2(87, 27)
+		self.settings_button.resize()
 		self.ui_elements.append(self.settings_button)
 
 		self.cap_button = Button(self.game)
 		self.cap_button.name = "CapButton"
 		self.cap_button.texture_id = 13
 		self.cap_button.is_selected_texture_id = 14
-		self.cap_button.size_in_pixels = ivec2(87, 27)
+		self.cap_button.size_in_pixels = ivec2(87, 40)
+		self.cap_button.resize()
 		self.ui_elements.append(self.cap_button)
 
 		self.menu_buttons_container = VBoxContainer(self.game)
@@ -66,9 +70,8 @@ class MainMenu:
 		self.menu_buttons_container.container_elements.append(self.settings_button)
 		self.menu_buttons_container.container_elements.append(self.exit_button)
 		self.menu_buttons_container.container_elements.append(self.cap_button)
+
 		self.menu_buttons_container.resize()
-		#self.menu_buttons_container.resize()
-		#self.menu_buttons_container.resize()
 		self.ui_elements.append(self.menu_buttons_container)
 
 		# Set anchors within our container depending on how many elements are in there.
@@ -88,6 +91,10 @@ class MainMenu:
 		# De-select everything first.
 		for i in range(len(self.ui_elements)):
 			self.ui_elements[i].is_mouse_position_in_bounds = False
+
+		# If the mouse isn't visible, then don't try to select anything.
+		if not self.game.mouse_visible:
+			return
 
 		# Find the first top-most element that the mouse fits in
 		# and make that the selected one, ignoring everything underneath.
