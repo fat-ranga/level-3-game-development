@@ -129,41 +129,42 @@ class VBoxContainer(Control):
 				largest_x_size = self.container_elements[i].size_in_pixels.x
 
 		self.size_in_pixels.x = largest_x_size
-		
 		number_of_ui_elements: int = len(self.container_elements)
-
 		y_anchor: float = 0.0
+		y_positions: list = []
+		current_y_position: float = 0.0
+		
 		#for i in range(number_of_ui_elements):
-		#	self.container_elements[i].anchor = vec2(0, 1 - y_anchor)
-		#	y_anchor += self.container_elements[i].size.y
+		#	# TODO: Potential divide by zero error here.
+		#	y_size_relative_to_container = self.container_elements[i].size_in_pixels.y / self.size_in_pixels.y
+		#	y_positions.append(y_size_relative_to_container)
+		#
+		#	current_y_position += y_size_relative_to_container
+		#	print(current_y_position)
+		
+		ranga = self.container_elements[0].size_in_pixels.y / self.size_in_pixels.y
+		frfr = self.container_elements[1].size_in_pixels.y / self.size_in_pixels.y
+		gangster = ranga + frfr
+		self.container_elements[1].anchor = vec2(0, gangster)
+		
+		ranga = self.container_elements[2].size_in_pixels.y / self.size_in_pixels.y
+		frfr = self.container_elements[3].size_in_pixels.y / self.size_in_pixels.y
+		the = ranga + frfr
+		ong = -the + gangster
+		print(ong)
+		self.container_elements[2].anchor = vec2(0, -0.14)
+		
+		
 		self.container_elements[0].anchor = vec2(0, 1)
-		#print(self.container_elements[0].size.y) # todo: scale as we go?
-		ranga = self.container_elements[2].size.y
-		self.container_elements[1].anchor = vec2(0, 0.33333 + ranga)
-		self.container_elements[2].anchor = vec2(0, -0.33333 + ranga)
-		#print(self.container_elements[1].size.y)
+		#self.container_elements[1].anchor = vec2(0, 0.4255)
+		#self.container_elements[2].anchor = vec2(0, -0.15)
 		self.container_elements[3].anchor = vec2(0, -1)
-
-
-			#self.container_elements[i].anchor = vec2(0, 1 - y_anchor)
-			#y_anchor += self.container_elements[i].size.y * 12
-			#print(f"element y size{self.container_elements[i].size.y}")
-
-
-			#y_position: float = 1 - (i * (2 / number_of_ui_elements))
-
-			#4  y_position: float = 1 - (i / 1.5) # TODO 1.5 might be y size
-			#3  y_position: float = 1 - (i / 1)
-			#2  y_position: float = 1 - (i / 0.5)
-			#magical_number: float = (number_of_ui_elements - 1) * 0.5
-			#y_position: float = 1 - (i / magical_number)
-			#
-			#self.container_elements[i].anchor = vec2(0, y_position)
+		
 			
-		#self.container_elements[0].anchor = vec2(0, 1)
-		#self.container_elements[1].anchor = vec2(0, 0.333)
-		#self.container_elements[2].anchor = vec2(0, -0.333)
-		#self.container_elements[3].anchor = vec2(0, -1)
+		
+		
+		#print(current_y_position)
+		#print(y_positions)
 
 
 
