@@ -65,14 +65,25 @@ class MainMenu:
 		self.cap_button.resize()
 		self.ui_elements.append(self.cap_button)
 
-		self.menu_buttons_container = VBoxContainer(self.game)
-		self.menu_buttons_container.container_elements.append(self.single_player_button)
-		self.menu_buttons_container.container_elements.append(self.settings_button)
-		self.menu_buttons_container.container_elements.append(self.exit_button)
-		self.menu_buttons_container.container_elements.append(self.cap_button)
-
-		self.menu_buttons_container.resize()
+		self.menu_buttons_container = Control(self.game)
 		self.ui_elements.append(self.menu_buttons_container)
+		self.exit_button.parent = self.menu_buttons_container
+		self.single_player_button.parent = self.menu_buttons_container
+		self.cap_button.parent = self.menu_buttons_container
+		self.settings_button.parent = self.menu_buttons_container
+
+		offset: float = 0.0
+		self.exit_button.offset = vec2(0, 0)
+
+		offset += self.single_player_button.size.y + self.exit_button.size.y
+		self.single_player_button.offset = vec2(0, offset)
+
+		offset += self.cap_button.size.y + self.single_player_button.size.y
+		self.cap_button.offset = vec2(0, offset)
+
+		offset += self.settings_button.size.y + self.cap_button.size.y
+		self.settings_button.offset = vec2(0, offset)
+
 
 		# Set anchors within our container depending on how many elements are in there.
 		#container_elements[0].anchor = vec2(0, 1)

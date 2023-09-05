@@ -11,12 +11,13 @@ class Control:
 		self.visible: bool = True
 		self.keep_aspect: bool = True  # TODO x and y?
 		self.name = "default"
-		self.detects_mouse: bool = True
+		self.detects_mouse: bool = False
 		self.is_mouse_position_in_bounds = False
 
 		# All relative to the Control's bounding box.
 		self.margin: vec2 = vec2(0.0, 0.0)
 		self.anchor: vec2 = vec2(0.0, 0.0)  # (0,0) is centre of screen in ModernGL.
+		self.offset: vec2 = vec2(0.0, 0.0)  # Position offset relative to parent position, if any.
 		self.scale: vec2 = vec2(2.0, 2.0)
 		self.size_in_pixels: ivec2 = ivec2(0, 0)
 
@@ -41,7 +42,7 @@ class Control:
 			self.position = local_anchor - offset_from_edges
 
 			# Then translate.
-			self.position += self.parent.position
+			self.position += self.parent.position + self.offset
 		else:
 			offset_from_edges = self.anchor * self.size
 			self.position = self.anchor - offset_from_edges
@@ -109,63 +110,6 @@ class Button(Control):
 	def resize(self):
 		super().resize()
 		self.mesh.rebuild()
-
-
-class VBoxContainer(Control):
-	def __init__(self, game):
-		super().__init__(game)
-		self.detects_mouse = False
-		self.container_elements: list = []
-
-	def resize(self):
-		super().resize()
-		self.size_in_pixels = ivec2(0, 0)
-		largest_x_size: float = 0.0
-		for i in range(len(self.container_elements)):
-			self.container_elements[i].parent = self
-			self.size_in_pixels.y += self.container_elements[i].size_in_pixels.y
-
-			if self.container_elements[i].size_in_pixels.x > largest_x_size:
-				largest_x_size = self.container_elements[i].size_in_pixels.x
-
-		self.size_in_pixels.x = largest_x_size
-		number_of_ui_elements: int = len(self.container_elements)
-		y_anchor: float = 0.0
-		y_positions: list = []
-		current_y_position: float = 0.0
-		
-		#for i in range(number_of_ui_elements):
-		#	# TODO: Potential divide by zero error here.
-		#	y_size_relative_to_container = self.container_elements[i].size_in_pixels.y / self.size_in_pixels.y
-		#	y_positions.append(y_size_relative_to_container)
-		#
-		#	current_y_position += y_size_relative_to_container
-		#	print(current_y_position)
-		
-		ranga = self.container_elements[0].size_in_pixels.y / self.size_in_pixels.y
-		frfr = self.container_elements[1].size_in_pixels.y / self.size_in_pixels.y
-		gangster = ranga + frfr
-		self.container_elements[1].anchor = vec2(0, gangster)
-		
-		ranga = self.container_elements[2].size_in_pixels.y / self.size_in_pixels.y
-		frfr = self.container_elements[3].size_in_pixels.y / self.size_in_pixels.y
-		the = ranga + frfr
-		ong = -the + gangster
-		print(ong)
-		self.container_elements[2].anchor = vec2(0, -0.14)
-		
-		
-		self.container_elements[0].anchor = vec2(0, 1)
-		#self.container_elements[1].anchor = vec2(0, 0.4255)
-		#self.container_elements[2].anchor = vec2(0, -0.15)
-		self.container_elements[3].anchor = vec2(0, -1)
-		
-			
-		
-		
-		#print(current_y_position)
-		#print(y_positions)
-
 
 
 def convert_pygame_screen_pos_to_moderngl_screen_pos(game, position: vec2) -> vec2:
