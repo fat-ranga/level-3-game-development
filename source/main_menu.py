@@ -61,7 +61,7 @@ class MainMenu:
 		self.cap_button.name = "CapButton"
 		self.cap_button.texture_id = 13
 		self.cap_button.is_selected_texture_id = 14
-		self.cap_button.size_in_pixels = ivec2(87, 40)
+		self.cap_button.size_in_pixels = ivec2(120, 10)
 		self.cap_button.resize()
 		self.ui_elements.append(self.cap_button)
 

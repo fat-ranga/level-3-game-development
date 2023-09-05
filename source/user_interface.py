@@ -11,7 +11,7 @@ class Control:
 		self.visible: bool = True
 		self.keep_aspect: bool = True  # TODO x and y?
 		self.name = "default"
-		self.detects_mouse: bool = False
+		self.detects_mouse: bool = True
 		self.is_mouse_position_in_bounds = False
 
 		# All relative to the Control's bounding box.
@@ -43,6 +43,7 @@ class Control:
 
 			# Then translate.
 			self.position += self.parent.position + self.offset
+			self.position.y *= self.game.settings.aspect_ratio
 		else:
 			offset_from_edges = self.anchor * self.size
 			self.position = self.anchor - offset_from_edges

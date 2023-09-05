@@ -92,7 +92,6 @@ class VoxelHandler:
 			self.chunk.mesh.rebuild()
 			self.rebuild_adjacent_chunks()
 
-	
 	def update(self):
 		self.ray_cast()
 	
