@@ -31,6 +31,7 @@ class Control:
 		normalised_size_in_pixels: vec2 = vec2(self.size_in_pixels.x / self.game.settings.window_resolution.x,
 											   self.size_in_pixels.y / self.game.settings.window_resolution.y)
 		self.size = normalised_size_in_pixels * self.scale
+		print(f"legfit size au{self.size}")
 		if not self.keep_aspect:
 			self.size.x *= self.game.settings.aspect_ratio
 
@@ -43,7 +44,12 @@ class Control:
 
 			# Then translate.
 			self.position += self.parent.position + self.offset
-			self.position.y *= self.game.settings.aspect_ratio
+			aspect_ratio_in_terms_of_y = self.game.settings.window_resolution.y / self.game.settings.window_resolution.x
+			aspect_ratio_in_terms_of_x = self.game.settings.window_resolution.x / self.game.settings.window_resolution.y
+			print(f"aspect in terms of y {aspect_ratio_in_terms_of_y}")
+			print(f"aspect in terms of x {aspect_ratio_in_terms_of_x}")
+			#self.position.y *= self.game.settings.aspect_ratio * (gangster)
+			self.position.y *= 2
 		else:
 			offset_from_edges = self.anchor * self.size
 			self.position = self.anchor - offset_from_edges
