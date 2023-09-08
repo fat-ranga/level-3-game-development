@@ -55,6 +55,8 @@ PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
 # Background world colour.
 BG_COLOUR = glm.vec3(0.48, 0.73, 0.99)
 
+INITIAL_WINDOW_RESOLUTION = glm.vec2(720, 720)
+
 # Texture atlas packer.
 ATLAS_TEXTURE_ELEMENT_SIZE = 16
 
@@ -101,7 +103,7 @@ class SettingsProfile:
 			"break_voxel": 1,  # Right-click.
 		}
 		# Resolution.
-		self.window_resolution: glm.vec2 = glm.vec2(720, 720)
+		self.window_resolution: glm.vec2 = glm.vec2(INITIAL_WINDOW_RESOLUTION.x, INITIAL_WINDOW_RESOLUTION.y)
 		self.mouse_sensitivity: float = 0.002
 		# Camera stuff.
 		self.aspect_ratio: float = self.window_resolution.x / self.window_resolution.y
