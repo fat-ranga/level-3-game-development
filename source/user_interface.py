@@ -49,17 +49,15 @@ class Control:
 			offset_from_edges = self.anchor * self.size
 			self.position = self.anchor - offset_from_edges
 		
+		# Correct position for aspect ratio when using offsets.
 		aspect_ratio_in_terms_of_x: float = self.game.settings.window_resolution.x / self.game.settings.window_resolution.y
 		window_scale_x: float = INITIAL_WINDOW_RESOLUTION.x / self.game.settings.window_resolution.x
 		
 		aspect_ratio_in_terms_of_y: float = self.game.settings.window_resolution.y / self.game.settings.window_resolution.x
 		window_scale_y: float = INITIAL_WINDOW_RESOLUTION.y / self.game.settings.window_resolution.y
 		
-		gangster = vec2(0, 0)
-		self.position += self.offset
-		# Correct position for aspect ratio when using offsets. # TODO: check horizontal at some point
-		self.position.y *= aspect_ratio_in_terms_of_x * window_scale_x
-		self.position.x *= aspect_ratio_in_terms_of_y * window_scale_y
+		self.position.x += self.offset.x * aspect_ratio_in_terms_of_y * window_scale_y
+		self.position.y += self.offset.y * aspect_ratio_in_terms_of_x * window_scale_x
 	
 	def update(self):
 		if not self.visible:

@@ -73,7 +73,8 @@ class Scene:
 			for y in range(self.game.player.inventory.height - 1):
 				new_slot = Button(self.game)
 				new_slot.size_in_pixels = ivec2(20, 20)
-				new_slot.offset = vec2(x / 10, y / 10)
+				new_slot.offset = vec2(x / 9, y / 9)
+				new_slot.offset.x -= 0.45
 				new_slot.scale = vec2(2, 2)
 				new_slot.texture_id = 6
 				new_slot.is_selected_texture_id = 12
@@ -84,8 +85,8 @@ class Scene:
 		for x in range(self.game.player.inventory.width):
 			new_slot = Button(self.game)
 			new_slot.size_in_pixels = ivec2(20, 20)
-			#new_slot.offset = vec2(x / 10, 0.0)
-			new_slot.anchor = vec2(0.0, 1.0)
+			new_slot.offset = vec2(x / 9, 0.0)
+			new_slot.anchor = vec2(0.0, -0.5)
 			new_slot.scale = vec2(2, 2)
 			new_slot.texture_id = 6
 			new_slot.is_selected_texture_id = 12
