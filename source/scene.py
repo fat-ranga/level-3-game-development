@@ -57,7 +57,7 @@ class Scene:
 		self.game.ctx.disable(mgl.DEPTH_TEST)
 		# Render UI.
 		for i in range(len(self.ui_elements)):
-			self.ui_elements[i].render()
+			self.ui_elements[i].update() # Update instead of render because element might be hidden.
 		self.game.ctx.enable(mgl.DEPTH_TEST)
 
 	def update_ui(self):

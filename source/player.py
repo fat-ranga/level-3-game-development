@@ -14,6 +14,7 @@ class Player(Camera):
 		self.voxel_data: VoxelDataDictionary = voxel_data
 
 		self.inventory = Inventory(ivec2(9, 4))
+		self.is_inventory_hidden: bool = True
 
 		# Initialise camera stuff.
 		super().__init__(position,
@@ -51,6 +52,7 @@ class Player(Camera):
 
 	def update(self):
 		# Check if we're underwater.
+		# TODO: make this a soft check in terms of gravity
 		if self.position.y < WATER_LINE:
 			self.is_swimming = True
 		else:
@@ -98,6 +100,14 @@ class Player(Camera):
 			if event.button == 1:
 				self.is_right_mouse_button_held: bool = False
 				return
+
+		# print(self.game.settings.input_map["toggle_inventory"])
+		if event.type == pg.KEYUP and event.key == pg.K_TAB:
+			self.is_inventory_hidden = not self.is_inventory_hidden
+			for i in range(len(self.game.scene.ui_elements)):
+				self.game.scene.ui_elements[i].visible = self.is_inventory_hidden
+
+
 
 	def mouse_control(self):
 		# Get mouse movement.

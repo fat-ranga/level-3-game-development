@@ -1,10 +1,10 @@
 import os
+import sys
+import pygame as pg
+import moderngl as mgl
 
 import source.settings
 from source.settings import *
-import moderngl as mgl
-import pygame as pg
-import sys
 from source.shader_program import ShaderProgram
 from source.scene import Scene
 from source.player import Player
@@ -112,6 +112,15 @@ class Main:
 		self.scene = Scene(self,
 						   texture_ids=self.textures.atlas_packer.texture_ids,
 						   voxel_data=self.voxel_data)
+
+		# Starting the mixer.
+		pg.mixer.init()
+		# Loading the song.
+		pg.mixer.music.load("data/audio/46-tui-morning-chorus.mp3")
+		# Setting the volume.
+		pg.mixer.music.set_volume(0.7)
+		# Start playing the song.
+		pg.mixer.music.play()
 
 	def update(self):
 		# todo: change this to a reference variable like 'current_scene' or something maybe

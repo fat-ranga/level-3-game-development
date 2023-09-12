@@ -63,7 +63,7 @@ ATLAS_TEXTURE_ELEMENT_SIZE = 16
 # Directories.
 DIR_TEXTURES: str = "data/textures/atlas"
 
-# textures
+# Textures.
 SAND = 1
 GRASS = 2
 DIRT = 3
@@ -72,23 +72,23 @@ SNOW = 5
 LEAVES = 6
 WOOD = 7
 
-# terrain levels
+# Terrain levels.
 SNOW_LVL = 54
 STONE_LVL = 49
 DIRT_LVL = 40
 GRASS_LVL = 8
 SAND_LVL = 7
 
-# tree settings
+# Tree settings.
 TREE_PROBABILITY = 0.02
 TREE_WIDTH, TREE_HEIGHT = 4, 8
 TREE_H_WIDTH, TREE_H_HEIGHT = TREE_WIDTH // 2, TREE_HEIGHT // 2
 
-# water
+# Water.
 WATER_LINE = 5.6
 WATER_AREA = 5 * CHUNK_SIZE * WORLD_W
 
-# cloud
+# Clouds.
 CLOUD_SCALE = 25
 CLOUD_HEIGHT = WORLD_H * CHUNK_SIZE * 2
 
@@ -101,6 +101,7 @@ class SettingsProfile:
 		self.input_map: dict = {
 			"place_voxel": 3,  # Left-click.
 			"break_voxel": 1,  # Right-click.
+			"toggle_inventory": pg.K_TAB
 		}
 		# Resolution.
 		self.window_resolution: glm.vec2 = glm.vec2(INITIAL_WINDOW_RESOLUTION.x, INITIAL_WINDOW_RESOLUTION.y)
@@ -110,4 +111,4 @@ class SettingsProfile:
 		self.fov_deg: int = 90
 		self.v_fov: float = glm.radians(FOV_DEG)  # Vertical Field of View.
 		self.h_fov: float = 2 * math.atan(math.tan(self.v_fov * 0.5) * self.aspect_ratio)  # Horizontal Field of View.
-		self.v_sync: int = 1  # 0 is False.
+		self.v_sync: int = 1  # 0 is False. Not a bool because PyGame has the option as an int for some reason.

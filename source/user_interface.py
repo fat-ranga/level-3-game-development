@@ -58,7 +58,7 @@ class Control:
 		
 		self.position.x += self.offset.x * aspect_ratio_in_terms_of_y * window_scale_y
 		self.position.y += self.offset.y * aspect_ratio_in_terms_of_x * window_scale_x
-	
+
 	def update(self):
 		if not self.visible:
 			return
