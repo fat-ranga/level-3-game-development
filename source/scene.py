@@ -18,6 +18,8 @@ class Scene:
 		self.skybox = Skybox(game)
 
 		self.ui_elements: list = []
+		self.main_inventory_ui_elements: list = []
+		self.inventory_hotbar_ui_elements: list = []
 		# Number of slots is dependent on player inventory size.
 		self.create_inventory_ui()
 
@@ -55,31 +57,44 @@ class Scene:
 		# Disable depth-testing, since we are just drawing UI
 		# elements on top of each other in screen-space.
 		self.game.ctx.disable(mgl.DEPTH_TEST)
+		
 		# Render UI.
 		for i in range(len(self.ui_elements)):
 			self.ui_elements[i].update() # Update instead of render because element might be hidden.
+		for i in range(len(self.main_inventory_ui_elements)):
+			self.main_inventory_ui_elements[i].update() # Update instead of render because element might be hidden.
+		for i in range(len(self.inventory_hotbar_ui_elements)):
+			self.inventory_hotbar_ui_elements[i].update() # Update instead of render because element might be hidden.
+			
 		self.game.ctx.enable(mgl.DEPTH_TEST)
 
 	def update_ui(self):
 		update_ui_elements(self.game, self.ui_elements)
+		update_ui_elements(self.game, self.inventory_hotbar_ui_elements)
+		update_ui_elements(self.game, self.main_inventory_ui_elements)
 
 	def rebuild_ui(self):
 		# Called when the aspect ratio / window size is changed, resizes UI accordingly.
 		resize_ui_elements(self.ui_elements)
+		resize_ui_elements(self.inventory_hotbar_ui_elements)
+		resize_ui_elements(self.main_inventory_ui_elements)
 
 	def create_inventory_ui(self):
 		# Main inventory.
+		total_width: float = 0.0
+		
 		for x in range(self.game.player.inventory.width):
 			for y in range(self.game.player.inventory.height - 1):
 				new_slot = Button(self.game)
 				new_slot.size_in_pixels = ivec2(20, 20)
 				new_slot.offset = vec2(x / 9, y / 9)
-				new_slot.offset.x -= 0.45
+				total_width += x / 2
+				new_slot.offset.x -= 0.45  # TODO: bad manual offset because I'm not using anchors for the grid.
 				new_slot.scale = vec2(2, 2)
 				new_slot.texture_id = 6
 				new_slot.is_selected_texture_id = 12
-
-				self.ui_elements.append(new_slot)
+				
+				self.main_inventory_ui_elements.append(new_slot)
 
 		# Toolbar.
 		for x in range(self.game.player.inventory.width):
@@ -87,8 +102,9 @@ class Scene:
 			new_slot.size_in_pixels = ivec2(20, 20)
 			new_slot.offset = vec2(x / 9, 0.0)
 			new_slot.anchor = vec2(0.0, -0.5)
+			new_slot.offset.x -= 0.45  # TODO: bad manual offset because I'm not using anchors for the grid.
 			new_slot.scale = vec2(2, 2)
 			new_slot.texture_id = 6
 			new_slot.is_selected_texture_id = 12
 			
-			self.ui_elements.append(new_slot)
+			self.inventory_hotbar_ui_elements.append(new_slot)

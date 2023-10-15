@@ -21,23 +21,29 @@ class Inventory:
         for i in range(self.array_size):
             self.items.append(None)
 
-        cap: Item = Item()
-        self.set_item(vec2(0.5, 0.5), item=cap)
-
-        print(self.items)
+        #cap: Item = Item()
+        #self.set_item(vec2(0.5, 0.5), item=cap)
+#
+        #print(self.items)
 
     def set_item(self, position: vec2, item: Item):
         self.items[int(position.x) * self.width + int(position.y)] = item
 
-    def add_item(self, item: Item, amount: int):
+    def add_item(self, item: Item, amount: int = 1):
         # Iterate through the array until we find a slot occupied by an item
         # of the same type, and increase its amount if the slot isn't greater than its max item stack count.
-        for x in range(self.width):
-            for y in range(self.height):
-                if self.items[x * self.width + y].string_id == item.string_id:
-                    if self.items[x * self.width + y].amount < item.max_amount:
-                        self.items[x * self.width + y].amount += 1
-
+        
+        for x in range(self.height):  # TODO: I should do some thinking as to why it's this way round.
+            for y in range(self.width):
+                if self.items[x * self.width + y] is not None:  # Make sure an item exists in the slot.
+                    if self.items[x * self.width + y].string_id == item.string_id:
+                        if self.items[x * self.width + y].amount < item.max_amount:
+                            self.items[x * self.width + y].amount += 1
+                            print(self.items[x * self.width + y].string_id)
+                            print(self.items[x * self.width + y].amount)
+                            return
+        
+        print("adding new item instead")
         # Otherwise, iterate through the array until we find a slot that
         # isn't occupied by an item.
         for x in range(self.width):

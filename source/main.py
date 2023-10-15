@@ -114,13 +114,13 @@ class Main:
 						   voxel_data=self.voxel_data)
 
 		# Starting the mixer.
-		pg.mixer.init()
+		#pg.mixer.init()
 		# Loading the song.
-		pg.mixer.music.load("data/audio/46-tui-morning-chorus.mp3")
+		#pg.mixer.music.load("data/audio/46-tui-morning-chorus.mp3")
 		# Setting the volume.
-		pg.mixer.music.set_volume(0.7)
+		#pg.mixer.music.set_volume(0.7)
 		# Start playing the song.
-		pg.mixer.music.play()
+		#pg.mixer.music.play()
 
 	def update(self):
 		# todo: change this to a reference variable like 'current_scene' or something maybe

@@ -6,6 +6,7 @@ from source.camera import Camera
 from source.settings import *
 from source.data_definitions import *
 from source.inventory import Inventory
+from source.user_interface import show_ui_elements, hide_ui_elements, toggle_visibility_of_ui_elements
 
 
 class Player(Camera):
@@ -131,7 +132,19 @@ class Player(Camera):
 		if self.is_right_mouse_button_held:
 			voxel_handler = self.game.scene.world.voxel_handler
 			# We break or place a voxel depending on the button pressed.
+			ranga = voxel_handler.get_voxel_id(voxel_handler.voxel_world_pos)
+			print(ranga[0])
+			# TODO: check if we actually broke a block
+			# and we need a way to convert the block id we get to a string id which we
+			# can then compare against the items dictionary.
 			voxel_handler.set_voxel(1)
+			
+			#gangster_item: Item = Item()
+			#gangster_item.name = "Gangster"
+			#gangster_item.string_id = "gangster"
+			#self.inventory.add_item(gangster_item, 1)
+			# TODO: Add item here usng voxel id of broken block
+			
 			self.change_voxel_timer = self.max_change_voxel_timer
 
 	def shake_camera(self):
@@ -150,6 +163,12 @@ class Player(Camera):
 
 		if key_state[pg.K_g]:
 			self.shake_camera()
+		
+		if key_state[pg.K_h]:
+			hide_ui_elements(self.game.scene.main_inventory_ui_elements)
+		
+		if key_state[pg.K_j]:
+			toggle_visibility_of_ui_elements(self.game.scene.inventory_hotbar_ui_elements)
 
 		if self.is_swimming:
 			self.movement_underwater(key_state)
